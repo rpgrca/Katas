@@ -200,7 +200,7 @@ namespace BowlingGame.Core.UnitTests
         }
 
         [Fact]
-        public void WhenPlayingASampleBowlingGame_ExtraRollsShouldNotBeAllowed()
+        public void WhenScoringSpareAtTenthFrame_ExtraRollShouldBeAllowed()
         {
             var game = new Game();
             game.Roll(1);  // 1.1
@@ -224,7 +224,69 @@ namespace BowlingGame.Core.UnitTests
             game.Roll(6);  // 11
             var exception = Assert.Throws<ArgumentException>(() => game.Roll(1));
             Assert.Equal(Game.INVALID_AMOUNT_OF_FRAMES_EXCEPTION, exception.Message);
-            //Assert.Equal(133, game.Score());
+        }
+        
+        [Fact]
+        public void WhenScoringStrikeAtTenthFrame_TwoExtraRollsShouldBeAllowed()
+        {
+            var game = new Game();
+            game.Roll(1);  // 1.1
+            game.Roll(4);  // 1.2
+            game.Roll(4);  // 2.1
+            game.Roll(5);  // 2.2
+            game.Roll(6);  // 3.1
+            game.Roll(4);  // 3.2
+            game.Roll(5);  // 4.1
+            game.Roll(5);  // 4.2
+            game.Roll(10); // 5
+            game.Roll(0);  // 6.1
+            game.Roll(1);  // 6.2
+            game.Roll(7);  // 7.1
+            game.Roll(3);  // 7.2
+            game.Roll(6);  // 8.1
+            game.Roll(4);  // 8.2
+            game.Roll(10); // 9
+            game.Roll(10); // 10
+            game.Roll(8);  // 11
+            game.Roll(6);  // 12
+            var exception = Assert.Throws<ArgumentException>(() => game.Roll(1));
+            Assert.Equal(Game.INVALID_AMOUNT_OF_FRAMES_EXCEPTION, exception.Message);
+        }
+
+        [Fact]
+        public void WhenPlayingAGameFrame1_ScoreShouldBeCalculatedCorrectly()
+        {
+            var game = new Game();
+            game.Roll(1);
+            game.Roll(4);
+            Assert.Equal(5, game.Score());
+        }
+        
+        [Fact]
+        public void WhenPlayingAGameWithSpareAtTenthFrame_ScoreShouldCorrectlyBeCalculated()
+        {
+            var game = new Game();
+            game.Roll(1); // 1.1
+            game.Roll(4); // 1.2
+            game.Roll(4); // 2.1
+            game.Roll(5); // 2.2
+            game.Roll(6); // 3.1
+            game.Roll(4); // 3.2
+            game.Roll(5); // 4.1
+            game.Roll(5); // 4.2
+            game.Roll(10); // 5
+            game.Roll(0); // 6.1
+            game.Roll(1); // 6.2
+            game.Roll(7); // 7.1
+            game.Roll(3); // 7.2
+            game.Roll(6); // 8.1
+            game.Roll(4); // 8.2
+            game.Roll(10); // 9
+            game.Roll(2); // 10.1
+            game.Roll(8); // 10.2
+            game.Roll(6); // 11
+            var exception = Assert.Throws<ArgumentException>(() => game.Roll(1));
+            Assert.Equal(133, game.Score());
         }
     }
 }

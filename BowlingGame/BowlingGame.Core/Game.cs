@@ -10,11 +10,11 @@ namespace BowlingGame.Core
             (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1)
         };
 
-        private int _extra_rolls = 0;
         private int _index = 0;
         public const string INVALID_AMOUNT_OF_FRAMES_EXCEPTION = "Invalid amount of frames";
         public const string INVALID_AMOUNT_OF_PINES_EXCEPTION = "Invalid amount of pines";
 
+        /*
         public int Score()
         {
             var result = 0;
@@ -27,7 +27,7 @@ namespace BowlingGame.Core
                 {
                     if (roll1 != -1) // Always != -1
                     {
-                        if (roll1 == 10 && _index < 10)
+                        if (roll1 == 10 && i < 10)
                         {
                             if (bonus > 0)
                             {
@@ -51,7 +51,7 @@ namespace BowlingGame.Core
 
                     if (roll2 != -1)
                     {
-                        if (roll1 + roll2 == 10 && _index < 10)
+                        if (roll1 + roll2 == 10 && i < 10)
                         {
                             bonus += 1;
                         }
@@ -72,8 +72,91 @@ namespace BowlingGame.Core
             }
             
             return result;
+        }*/
+
+        public int Score()
+        {
+            var score = CalculateCommonScore();
+            score += CalculateSpareBonus();
+            score += CalculateStrikeBonus();
+
+            return score;
         }
 
+        private int CalculateCommonScore()
+        {
+            var result = 0;
+            
+            foreach (var frame in _frames)
+            {
+                if (frame.Item1 != -1)
+                {
+                    result += frame.Item1;
+                }
+
+                if (frame.Item2 != -1)
+                {
+                    result += frame.Item2;
+                }
+            }
+
+            return result;
+        }
+
+        private int CalculateSpareBonus()
+        {
+            var bonus = 0;
+            var needBonus = false;
+
+            for (var i = 0; i < 10; i++)
+            {
+                if (needBonus && _frames[i].Item1 != -1)
+                {
+                    bonus += _frames[i].Item1;
+                    needBonus = false;
+                }
+
+                if (_frames[i].Item1 + _frames[i].Item2 == 10)
+                {
+                    needBonus = true;
+                }
+            }
+
+            return bonus;
+        }
+
+        private int CalculateStrikeBonus()
+        {
+            var nextMultiplier = 0;
+            var nextNextMultiplier = 0;
+            var bonus = 0;
+            
+            for (int i = 0; i < 10; i++)
+            {
+                if (_frames[i].Item1 != -1 && nextMultiplier > 0)
+                {
+                    bonus += _frames[i].Item1 * nextMultiplier;
+                    nextMultiplier = nextNextMultiplier;
+                    nextNextMultiplier = 0;
+                }
+
+                if (_frames[i].Item2 != -1 && nextMultiplier > 0)
+                {
+                    bonus += _frames[i].Item2 * nextMultiplier;
+                    nextMultiplier = nextNextMultiplier;
+                    nextNextMultiplier = 0;
+                }
+                
+                if (_frames[i].Item1 == 10)
+                {
+                    nextMultiplier = 1;
+                    nextNextMultiplier = 1;
+                }
+            }
+
+            return bonus;
+        }
+        
         public void Roll(int pins)
         {
             if (pins > 10 || pins < 0)
@@ -132,14 +215,7 @@ namespace BowlingGame.Core
                                 }
                                 else
                                 {
-                                    if (_frames[11].Item1 == -1)
-                                    {
-                                        _frames[10].Item1 = pins;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentException(INVALID_AMOUNT_OF_FRAMES_EXCEPTION);
-                                    }
+                                    throw new ArgumentException(INVALID_AMOUNT_OF_FRAMES_EXCEPTION);
                                 }
                             }
                         }
