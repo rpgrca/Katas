@@ -162,7 +162,7 @@ namespace BowlingGame.Core.UnitTests
             game.Roll(10);
             game.Roll(10);
             game.Roll(5);
-            Assert.Equal(40, game.Score());
+            Assert.Equal(45, game.Score());
         }
 
         [Fact]
@@ -173,7 +173,7 @@ namespace BowlingGame.Core.UnitTests
             game.Roll(10);
             game.Roll(4);
             game.Roll(5);
-            Assert.Equal(48, game.Score());
+            Assert.Equal(52, game.Score());
         }
 
         [Fact]

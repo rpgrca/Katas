@@ -14,70 +14,10 @@ namespace BowlingGame.Core
         public const string INVALID_AMOUNT_OF_FRAMES_EXCEPTION = "Invalid amount of frames";
         public const string INVALID_AMOUNT_OF_PINES_EXCEPTION = "Invalid amount of pines";
 
-        /*
-        public int Score()
-        {
-            var result = 0;
-            var bonus = 0;
-            
-            for (var i = 0; i <= _index; i++)
-            {
-                var frameScore = 0;
-                var (roll1, roll2) = _frames[i];
-                {
-                    if (roll1 != -1) // Always != -1
-                    {
-                        if (roll1 == 10 && i < 10)
-                        {
-                            if (bonus > 0)
-                            {
-                                frameScore += roll1;
-                                bonus--;
-                            }
-
-                            bonus += 2;
-                        }
-                        else
-                        {
-                            if (bonus > 0)
-                            {
-                                frameScore += roll1;
-                                bonus--;
-                            }
-                        }
- 
-                        frameScore += roll1;
-                    }
-
-                    if (roll2 != -1)
-                    {
-                        if (roll1 + roll2 == 10 && i < 10)
-                        {
-                            bonus += 1;
-                        }
-                        else
-                        {
-                            if (bonus > 0)
-                            {
-                                frameScore += roll2;
-                                bonus--;
-                            }
-                        }
-                        
-                        frameScore += roll2;
-                    }
-                }
-               
-                result += frameScore;
-            }
-            
-            return result;
-        }*/
-
         public int Score()
         {
             var score = CalculateCommonScore();
-            score += CalculateSpareBonus();
+            //score += CalculateSpareBonus();
             score += CalculateStrikeBonus();
 
             return score;
@@ -146,11 +86,18 @@ namespace BowlingGame.Core
                     nextMultiplier = nextNextMultiplier;
                     nextNextMultiplier = 0;
                 }
-                
+
                 if (_frames[i].Item1 == 10)
                 {
-                    nextMultiplier = 1;
+                    nextMultiplier += 1;
                     nextNextMultiplier = 1;
+                }
+                else
+                {
+                    if (_frames[i].Item1 + _frames[i].Item2 == 10)
+                    {
+                        nextMultiplier += 1;
+                    }
                 }
             }
 
