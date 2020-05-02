@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FizzBuzz.Core", "FizzBuzz.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FizzBuzz.Core.UnitTests", "FizzBuzz.Core.UnitTests\FizzBuzz.Core.UnitTests.csproj", "{4D7CC943-0E11-45C8-B063-0892FBD0C463}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FizzBuzz", "FizzBuzz\FizzBuzz.csproj", "{D648D138-169F-42CC-BA37-FA6603BE569A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{4D7CC943-0E11-45C8-B063-0892FBD0C463}.Release|x64.Build.0 = Release|Any CPU
 		{4D7CC943-0E11-45C8-B063-0892FBD0C463}.Release|x86.ActiveCfg = Release|Any CPU
 		{4D7CC943-0E11-45C8-B063-0892FBD0C463}.Release|x86.Build.0 = Release|Any CPU
+		{D648D138-169F-42CC-BA37-FA6603BE569A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D648D138-169F-42CC-BA37-FA6603BE569A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D648D138-169F-42CC-BA37-FA6603BE569A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D648D138-169F-42CC-BA37-FA6603BE569A}.Debug|x64.Build.0 = Debug|Any CPU
+		{D648D138-169F-42CC-BA37-FA6603BE569A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D648D138-169F-42CC-BA37-FA6603BE569A}.Debug|x86.Build.0 = Debug|Any CPU
+		{D648D138-169F-42CC-BA37-FA6603BE569A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D648D138-169F-42CC-BA37-FA6603BE569A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D648D138-169F-42CC-BA37-FA6603BE569A}.Release|x64.ActiveCfg = Release|Any CPU
+		{D648D138-169F-42CC-BA37-FA6603BE569A}.Release|x64.Build.0 = Release|Any CPU
+		{D648D138-169F-42CC-BA37-FA6603BE569A}.Release|x86.ActiveCfg = Release|Any CPU
+		{D648D138-169F-42CC-BA37-FA6603BE569A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

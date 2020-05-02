@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.0
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Install tools
+      run: dotnet tool install --global coverlet.console
+
+    - name: Build Release
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Build Debug
+      run: dotnet build --configuration Debug --no-restore
+
+    - name: Testing FizzBuzz.Core Library
+      run: coverlet FizzBuzz.Core.UnitTests/bin/Debug/netcoreapp3.0/FizzBuzz.Core.UnitTests.dll --target "dotnet" --targetargs "test FizzBuzz.Core.UnitTests/FizzBuzz.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output fizzbuzz.core.coverage.xml
+
+    - name: Testing BowlingGame.Core Library
+      run: coverlet BowlingGame.Core.UnitTests/bin/Debug/netcoreapp3.0/BowlingGame.Core.UnitTests.dll --target "dotnet" --targetargs "test BowlingGame.API.UnitTests/BowlingGame.API.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output bowlinggame.coverage.xml"
+
+    - name: Upload
+      run: bash <(curl -s https://codecov.io/bash)
