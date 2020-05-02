@@ -32,10 +32,10 @@ jobs:
       run: dotnet build --configuration Debug --no-restore
 
     - name: Testing FizzBuzz.Core Library
-      run: coverlet FizzBuzz.Core.UnitTests/bin/Debug/netcoreapp3.0/FizzBuzz.Core.UnitTests.dll --target "dotnet" --targetargs "test FizzBuzz.Core.UnitTests/FizzBuzz.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output fizzbuzz.core.coverage.xml
+      run: coverlet FizzBuzz/FizzBuzz.Core.UnitTests/bin/Debug/netcoreapp3.0/FizzBuzz.Core.UnitTests.dll --target "dotnet" --targetargs "test FizzBuzz/FizzBuzz.Core.UnitTests/FizzBuzz.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output fizzbuzz.core.coverage.xml
 
     - name: Testing BowlingGame.Core Library
-      run: coverlet BowlingGame.Core.UnitTests/bin/Debug/netcoreapp3.0/BowlingGame.Core.UnitTests.dll --target "dotnet" --targetargs "test BowlingGame.API.UnitTests/BowlingGame.API.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output bowlinggame.coverage.xml"
+      run: coverlet BowlingGame/BowlingGame.Core.UnitTests/bin/Debug/netcoreapp3.0/BowlingGame.Core.UnitTests.dll --target "dotnet" --targetargs "test BowlingGame/BowlingGame.Core.UnitTests/BowlingGame.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output bowlinggame.coverage.xml"
 
     - name: Upload
       run: bash <(curl -s https://codecov.io/bash)
