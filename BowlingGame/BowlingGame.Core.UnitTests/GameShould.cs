@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using Xunit;
 
 namespace BowlingGame.Core.UnitTests
@@ -287,6 +288,70 @@ namespace BowlingGame.Core.UnitTests
             game.Roll(6); // 11
             var exception = Assert.Throws<ArgumentException>(() => game.Roll(1));
             Assert.Equal(133, game.Score());
+        }
+
+        [Fact]
+        public void WhenGettingAStrikeInLastFrame_TwoExtraRollsShouldBeAwarded()
+        {
+            var game = new Game();
+            game.Roll(10);
+            game.Roll(10);
+            game.Roll(10);
+            game.Roll(10);
+            game.Roll(10);
+            game.Roll(10);
+            game.Roll(10);
+            game.Roll(10);
+            game.Roll(10);
+            game.Roll(10);
+            game.Roll(10);
+            game.Roll(10);
+            var exception = Assert.Throws<ArgumentException>(() => game.Roll(10));
+            Assert.Equal(Game.INVALID_AMOUNT_OF_FRAMES_EXCEPTION, exception.Message);
+        }
+
+        [Fact]
+        public void WhenFinishingAPerfectGame_ScoreShouldBe300()
+        {
+             var game = new Game();
+             game.Roll(10);
+             game.Roll(10);
+             game.Roll(10);
+             game.Roll(10);
+             game.Roll(10);
+             game.Roll(10);
+             game.Roll(10);
+             game.Roll(10);
+             game.Roll(10);
+             game.Roll(10);
+             game.Roll(10);
+             game.Roll(10);
+             Assert.Equal(300, game.Score());
+        }
+
+        [Fact]
+        public void WhenFinishingAGame_ScoreShouldBeCalculatedCorrectly()
+        {
+            var game = new Game();
+            game.Roll(1);
+            game.Roll(8);
+            game.Roll(4);
+            game.Roll(2);
+            game.Roll(10);
+            game.Roll(2);
+            game.Roll(2);
+            game.Roll(1);
+            game.Roll(9);
+            game.Roll(7);
+            game.Roll(3);
+            game.Roll(10);
+            game.Roll(1);
+            game.Roll(2);
+            game.Roll(0);
+            game.Roll(0);
+            game.Roll(5);
+            game.Roll(2);
+            Assert.Equal(93, game.Score());
         }
     }
 }

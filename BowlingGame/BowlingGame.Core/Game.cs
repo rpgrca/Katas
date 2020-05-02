@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BowlingGame.Core
@@ -14,58 +15,56 @@ namespace BowlingGame.Core
         public const string INVALID_AMOUNT_OF_FRAMES_EXCEPTION = "Invalid amount of frames";
         public const string INVALID_AMOUNT_OF_PINES_EXCEPTION = "Invalid amount of pines";
 
-
         public int Score()
         {
-            var nextMultiplier = 0;
-            var nextNextMultiplier = 0;
-            var bonus = 0;
             var score = 0;
-            
-            for (int i = 0; i <= _index; i++)
+
+            for (int i = 0; i < _frames.Length; i++)
             {
-                if (_frames[i].Item1 != -1)
+                var frameScore = 0;
+                frameScore += (_frames[i].Item1 != -1 ? _frames[i].Item1 : 0);
+                frameScore += (_frames[i].Item2 != -1 ? _frames[i].Item2 : 0);               
+                
+                if (_frames[i].Item1 == 10)
                 {
-                    score += _frames[i].Item1;
-                }
-
-                if (_frames[i].Item2 != -1)
-                {
-                    score += _frames[i].Item2;
-                }
-
-                if (i < 10)
-                {
-                    if (_frames[i].Item1 != -1 && nextMultiplier > 0)
+//                    frameScore += _frames.Skip(i + 1).Take(2).Sum(p => p.Item1 != -1? p.Item1 : 0);
+                    if (i < 9)
                     {
-                        bonus += _frames[i].Item1 * nextMultiplier;
-                        nextMultiplier = nextNextMultiplier;
-                        nextNextMultiplier = 0;
-                    }
-
-                    if (_frames[i].Item2 != -1 && nextMultiplier > 0)
-                    {
-                        bonus += _frames[i].Item2 * nextMultiplier;
-                        nextMultiplier = nextNextMultiplier;
-                        nextNextMultiplier = 0;
-                    }
-
-                    if (StrikeInFrame(_frames[i]))
-                    {
-                        nextMultiplier += 1;
-                        nextNextMultiplier = 1;
-                    }
-                    else
-                    {
-                        if (SpareInFrame(_frames[i]))
+                        if (_frames[i + 1].Item1 != -1)
                         {
-                            nextMultiplier += 1;
+                            frameScore += _frames[i + 1].Item1;
+                            if (_frames[i + 1].Item1 == 10)
+                            {
+                                if (_frames[i + 2].Item1 != -1)
+                                {
+                                    frameScore += _frames[i + 2].Item1;
+                                }
+                            }
+                            else
+                            {
+                                if (_frames[i + 1].Item2 != -1)
+                                {
+                                    frameScore += _frames[i + 1].Item2;
+                                }
+                            }
                         }
                     }
                 }
+                else
+                {
+                    if (_frames[i].Item1 + _frames[i].Item2 == 10)
+                    {
+                        if (i < 8)
+                        {
+                            frameScore += _frames.Skip(i + 1).Take(1).Sum(p => p.Item1 != -1? p.Item1 : 0);
+                        }
+                    }
+                }
+
+                score += frameScore;
             }
 
-            return score + bonus;
+            return score;
         }
 
         private static bool SpareInFrame((int, int) frame) =>
