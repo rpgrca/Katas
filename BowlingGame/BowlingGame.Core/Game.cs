@@ -6,9 +6,9 @@ namespace BowlingGame.Core
 {
     public class Game
     {
-        private readonly List<int> _rolls = new List<int>();
         public const string INVALID_AMOUNT_OF_FRAMES_EXCEPTION = "Invalid amount of frames";
         public const string INVALID_AMOUNT_OF_PINES_EXCEPTION = "Invalid amount of pines";
+        private readonly List<int> _rolls = new List<int>();
 
         public int Score()
         {
@@ -16,10 +16,9 @@ namespace BowlingGame.Core
 
             for (var i = 0; i < 20; i += 2)
             {
-                var frameScore = 0;
-                frameScore += (GetRoll(i) != -1 ? GetRoll(i) : 0);
+                var frameScore = GetRoll(i);
                 var strike = frameScore == 10;
-                frameScore += (GetRoll(i + 1) != -1 ? GetRoll(i + 1) : 0);
+                frameScore += GetRoll(i + 1);
 
                 if (frameScore == 10)
                 {
@@ -33,7 +32,7 @@ namespace BowlingGame.Core
         }
 
         private int GetRoll(int index) =>
-            index < _rolls.Count ? _rolls[index] : -1;
+            index < _rolls.Count ? (_rolls[index] != -1? _rolls[index] : 0) : 0;
 
         private int GetBonus(int i, int count) =>
             _rolls
@@ -46,16 +45,10 @@ namespace BowlingGame.Core
         {
             const int maximumAmountOfPinsPerRoll = 10;
             const int minimumAmountOfPinsPerRoll = 0;
-            const int maximumAmountOfRolls = 21;
             
             if (pins > maximumAmountOfPinsPerRoll || pins < minimumAmountOfPinsPerRoll)
             {
                 throw new ArgumentOutOfRangeException(nameof(pins), INVALID_AMOUNT_OF_PINES_EXCEPTION);
-            }
-
-            if (_rolls.Count > maximumAmountOfRolls)
-            {
-                throw new ArgumentException(INVALID_AMOUNT_OF_FRAMES_EXCEPTION);
             }
 
             if (_rolls.Count < 20)
@@ -68,27 +61,14 @@ namespace BowlingGame.Core
             }
             else
             {
-                if (_rolls.Count == 20)
+                switch (_rolls.Count)
                 {
-                    if (IsStrikeInRoll(18) || IsSplitInRolls(18, 19))
-                    {
+                    case 20 when (IsStrikeInRoll(18) || IsSplitInRolls(18, 19)):
+                    case 21 when IsStrikeInRoll(18):
                         _rolls.Add(pins);
-                    }
-                    else
-                    {
+                        break;
+                    default:
                         throw new ArgumentException(INVALID_AMOUNT_OF_FRAMES_EXCEPTION);
-                    }
-                }
-                else
-                {
-                    if (IsStrikeInRoll(18))
-                    {
-                        _rolls.Add(pins);
-                    }
-                    else
-                    {
-                        throw new ArgumentException(INVALID_AMOUNT_OF_FRAMES_EXCEPTION);
-                    }
                 }
             }
         }
