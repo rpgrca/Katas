@@ -6,12 +6,7 @@ namespace BowlingGame.Core
 {
     public class Game
     {
-        private readonly (int, int)[] _frames = new[]
-        {
-            (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1)
-        };
-
-        private int _index = 0;
+        private readonly List<int> _rolls = new List<int>();
         public const string INVALID_AMOUNT_OF_FRAMES_EXCEPTION = "Invalid amount of frames";
         public const string INVALID_AMOUNT_OF_PINES_EXCEPTION = "Invalid amount of pines";
 
@@ -19,46 +14,16 @@ namespace BowlingGame.Core
         {
             var score = 0;
 
-            for (int i = 0; i < _frames.Length; i++)
+            for (var i = 0; i < 20; i += 2)
             {
                 var frameScore = 0;
-                frameScore += (_frames[i].Item1 != -1 ? _frames[i].Item1 : 0);
-                frameScore += (_frames[i].Item2 != -1 ? _frames[i].Item2 : 0);               
-                
-                if (_frames[i].Item1 == 10)
+                frameScore += (GetRoll(i) != -1 ? GetRoll(i) : 0);
+                var strike = frameScore == 10;
+                frameScore += (GetRoll(i + 1) != -1 ? GetRoll(i + 1) : 0);
+
+                if (frameScore == 10)
                 {
-//                    frameScore += _frames.Skip(i + 1).Take(2).Sum(p => p.Item1 != -1? p.Item1 : 0);
-                    if (i < 9)
-                    {
-                        if (_frames[i + 1].Item1 != -1)
-                        {
-                            frameScore += _frames[i + 1].Item1;
-                            if (_frames[i + 1].Item1 == 10)
-                            {
-                                if (_frames[i + 2].Item1 != -1)
-                                {
-                                    frameScore += _frames[i + 2].Item1;
-                                }
-                            }
-                            else
-                            {
-                                if (_frames[i + 1].Item2 != -1)
-                                {
-                                    frameScore += _frames[i + 1].Item2;
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if (_frames[i].Item1 + _frames[i].Item2 == 10)
-                    {
-                        if (i < 8)
-                        {
-                            frameScore += _frames.Skip(i + 1).Take(1).Sum(p => p.Item1 != -1? p.Item1 : 0);
-                        }
-                    }
+                    frameScore += GetBonus(i, strike ? 2 : 1);
                 }
 
                 score += frameScore;
@@ -67,95 +32,71 @@ namespace BowlingGame.Core
             return score;
         }
 
-        private static bool SpareInFrame((int, int) frame) =>
-            frame.Item1 + frame.Item2 == 10;
+        private int GetRoll(int index) =>
+            index < _rolls.Count ? _rolls[index] : -1;
 
-        private static bool StrikeInFrame((int, int) frame) =>
-            frame.Item1 == 10;
+        private int GetBonus(int i, int count) =>
+            _rolls
+                .Skip(i + 2)
+                .Where(p => p != -1)
+                .Take(count)
+                .Sum();
 
         public void Roll(int pins)
         {
-            if (pins > 10 || pins < 0)
+            const int maximumAmountOfPinsPerRoll = 10;
+            const int minimumAmountOfPinsPerRoll = 0;
+            const int maximumAmountOfRolls = 21;
+            
+            if (pins > maximumAmountOfPinsPerRoll || pins < minimumAmountOfPinsPerRoll)
             {
                 throw new ArgumentOutOfRangeException(nameof(pins), INVALID_AMOUNT_OF_PINES_EXCEPTION);
             }
 
-            if (_index < 10 && _frames[_index].Item1 == -1)
+            if (_rolls.Count > maximumAmountOfRolls)
             {
-                _frames[_index].Item1 = pins;
+                throw new ArgumentException(INVALID_AMOUNT_OF_FRAMES_EXCEPTION);
+            }
+
+            if (_rolls.Count < 20)
+            {
+                _rolls.Add(pins);
                 if (pins == 10)
                 {
-                    _index++;
+                    _rolls.Add(-1);
                 }
-            }
-            else if (_index < 10 && _frames[_index].Item2 == -1)
-            {
-                _frames[_index].Item2 = pins;
             }
             else
             {
-                if (++_index < 10)
+                if (_rolls.Count == 20)
                 {
-                    _frames[_index].Item1 = pins;
-                    if (pins == 10)
+                    if (IsStrikeInRoll(18) || IsSplitInRolls(18, 19))
                     {
-                        _index++;
+                        _rolls.Add(pins);
+                    }
+                    else
+                    {
+                        throw new ArgumentException(INVALID_AMOUNT_OF_FRAMES_EXCEPTION);
                     }
                 }
                 else
                 {
-                    if (_frames[9].Item1 == 10)
+                    if (IsStrikeInRoll(18))
                     {
-                        if (_frames[10].Item1 == 10)
-                        {
-                            if (_frames[11].Item1 == -1)
-                            {
-                                _frames[11].Item1 = pins;
-                            }
-                            else
-                            {
-                                throw new ArgumentException(INVALID_AMOUNT_OF_FRAMES_EXCEPTION);
-                            }
-                        }
-                        else
-                        {
-                            if (_frames[10].Item1 == -1)
-                            {
-                                _frames[10].Item1 = pins;
-                            }
-                            else
-                            {
-                                if (_frames[10].Item2 == -1)
-                                {
-                                    _frames[10].Item2 = pins;
-                                }
-                                else
-                                {
-                                    throw new ArgumentException(INVALID_AMOUNT_OF_FRAMES_EXCEPTION);
-                                }
-                            }
-                        }
+                        _rolls.Add(pins);
                     }
                     else
                     {
-                        if (_frames[9].Item1 + _frames[9].Item2 == 10)
-                        {
-                            if (_frames[10].Item1 == -1)
-                            {
-                                _frames[10].Item1 = pins;
-                            }
-                            else
-                            {
-                                throw new ArgumentException(INVALID_AMOUNT_OF_FRAMES_EXCEPTION);
-                            }
-                        }
-                        else
-                        {
-                            throw new ArgumentException(INVALID_AMOUNT_OF_FRAMES_EXCEPTION);
-                        }                       
+                        throw new ArgumentException(INVALID_AMOUNT_OF_FRAMES_EXCEPTION);
                     }
                 }
             }
         }
+
+        private bool IsStrikeInRoll(int roll) =>
+            GetRoll(roll) == 10;
+
+        private bool IsSplitInRolls(int roll1, int roll2) =>
+            GetRoll(roll1) + GetRoll(roll2) == 10;
     }
 }

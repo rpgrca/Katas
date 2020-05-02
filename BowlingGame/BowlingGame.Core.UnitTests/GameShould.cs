@@ -249,7 +249,7 @@ namespace BowlingGame.Core.UnitTests
             game.Roll(10); // 9
             game.Roll(10); // 10
             game.Roll(8);  // 11
-            game.Roll(6);  // 12
+            game.Roll(2);  // 12
             var exception = Assert.Throws<ArgumentException>(() => game.Roll(1));
             Assert.Equal(Game.INVALID_AMOUNT_OF_FRAMES_EXCEPTION, exception.Message);
         }
