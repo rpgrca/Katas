@@ -55,16 +55,17 @@ namespace Wardrobe.Core
         {
             if (currentIndex < 0)
             {
-                if (currentCombination.Sum() == 0) return;
+                var currentCombinationSum = currentCombination.Sum();
+                if (currentCombinationSum == 0 || (currentCombinationSum > wallSize)) return;
 
-                var leftOver = wallSize - currentCombination.Sum();
-                if (leftOver >= 0 && leftOver < minimumSpaceLeft)
+                var leftOver = wallSize - currentCombinationSum;
+                if (leftOver < minimumSpaceLeft)
                 {
                     validCombinations.Clear();
-                    minimumSpaceLeft = wallSize - currentCombination.Sum();
+                    minimumSpaceLeft = leftOver;
                 }
 
-                if ((wallSize - currentCombination.Sum() == minimumSpaceLeft))
+                if (leftOver == minimumSpaceLeft)
                 {
                     validCombinations.Add(currentCombination.ToList());
                 }
@@ -116,7 +117,8 @@ namespace Wardrobe.Core
                 .ToList();
 
         private static void RemoveZeroPlaceholders(List<List<int>> combinations) =>
-            combinations.ForEach(p => p.RemoveAll(q => q == 0));
+            combinations
+                .ForEach(p => p.RemoveAll(q => q == 0));
 
         private int GetMaximumCombinations(int wallSize) =>
             wallSize / _sizes[0];
