@@ -31,6 +31,15 @@ namespace Wardrobe.Core.UnitTests
         }
 
         [Fact]
+        public void
+            GivenAListOfSizesWithValidAndInvalidValues_WhenCreatingAWardrobeMakerWithIt_ThenAnExceptionIsThrown()
+        {
+            var invalidAndValidValues = new List<int> {1, -1};
+            var exception = Assert.Throws<ArgumentException>(() => new WardrobeMaker(invalidAndValidValues));
+            Assert.Equal(WardrobeMaker.SIZE_LIST_CONTAINS_INVALID_VALUES_EXCEPTION, exception.Message);
+        }
+
+        [Fact]
         public void GivenAListOfSizes_WhenCreatingAWardrobeMakerWithIt_ThenAnInstanceShouldBeReturned()
         {
             var wardrobeMaker = new WardrobeMaker(new List<int> { 50, 75, 100, 120 });
