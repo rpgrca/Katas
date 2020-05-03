@@ -37,5 +37,8 @@ jobs:
     - name: Testing BowlingGame.Core Library
       run: coverlet BowlingGame/BowlingGame.Core.UnitTests/bin/Debug/netcoreapp3.0/BowlingGame.Core.UnitTests.dll --target "dotnet" --targetargs "test BowlingGame/BowlingGame.Core.UnitTests/BowlingGame.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output bowlinggame.coverage.xml
 
+    - name: Testing Wardrobe.Core Library
+      run: coverlet Wardrobe/Wardrobe.Core.UnitTests/bin/Debug/netcoreapp3.0/Wardrobe.Core.UnitTests.dll --target "dotnet" --targetargs "test Wardrobe/Wardrobe.Core.UnitTests/Wardrobe.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output wardrobe.coverage.xml
+
     - name: Upload
       run: bash <(curl -s https://codecov.io/bash)
