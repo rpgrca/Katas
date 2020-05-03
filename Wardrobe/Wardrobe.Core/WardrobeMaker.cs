@@ -214,11 +214,11 @@ namespace Wardrobe.Core
             public bool Equals(List<int> lhs, List<int> rhs)
             {
                 var different = false;
-                
+
                 if (lhs.Count == rhs.Count)
                 {
-                    lhs.Sort();
-                    rhs.Sort();
+                    //lhs.Sort();
+                    //rhs.Sort();
 
                     for (int index = 0; index < lhs.Count; index++)
                     {
