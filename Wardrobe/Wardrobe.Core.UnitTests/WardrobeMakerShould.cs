@@ -90,18 +90,43 @@ namespace Wardrobe.Core.UnitTests
             var wardrobes = wardrobeMaker.GetCombinations(1);
             Assert.Empty(wardrobes);
         }
-        /*
+
         [Fact]
         public void GivenAWardrobeMakerWithWardrobesOfSizeOneAndTwo_WhenCombiningForFourSizedWalls_ThenFiveElementsAreReturned()
         {
             var wardrobeMaker = new WardrobeMaker(new List<int>() { 1, 2, });
             var wardrobes = wardrobeMaker.GetCombinations(4);
-            Assert.Collection(wardrobes,
-                e1 => Assert.Equal(new List<int>() { 1, 1, 1, 1 }, e1),
-                e2 => Assert.Equal(new List<int>() { 1, 1, 2 }, e2),
-                e3 => Assert.Equal(new List<int>() { 1, 2, 1 }, e3),
-                e4 => Assert.Equal(new List<int>() { 2, 1, 1 }, e4),
-                e5 => Assert.Equal(new List<int>() { 2, 2 }, e5));
-        }*/
+            Assert.Equal(5, wardrobes.Count);
+            Assert.Contains(new List<int>() {1, 1, 1, 1}, wardrobes);
+            Assert.Contains(new List<int>() {1, 1, 2}, wardrobes);
+            Assert.Contains(new List<int>() {1, 2, 1}, wardrobes);
+            Assert.Contains(new List<int>() {2, 1, 1}, wardrobes);
+            Assert.Contains(new List<int>() { 2, 2 }, wardrobes);
+        }
+
+        [Fact]
+        public void GivenAWardrobeMakerWithFourSizes_WhenCombiningFor250cmWall_ThenSolutionIsObtained()
+        {
+            var wardrobeMaker = new WardrobeMaker(new List<int>() {50, 75, 100, 120});
+            var wardrobes = wardrobeMaker.GetCombinations(250);
+            Assert.Equal(17, wardrobes.Count);
+            Assert.Contains(new List<int>() {50, 50, 50, 50, 50}, wardrobes);
+            Assert.Contains(new List<int>() {50, 100, 100}, wardrobes);
+            Assert.Contains(new List<int>() {100, 50, 100}, wardrobes);
+            Assert.Contains(new List<int>() {100, 100, 50}, wardrobes);
+            Assert.Contains(new List<int>() {50, 50, 50, 100}, wardrobes);
+            Assert.Contains(new List<int>() {50, 50, 100, 50}, wardrobes);
+            Assert.Contains(new List<int>() {50, 100, 50, 50}, wardrobes);
+            Assert.Contains(new List<int>() {100, 50, 50, 50}, wardrobes);
+            Assert.Contains(new List<int>() {75, 75, 100}, wardrobes);
+            Assert.Contains(new List<int>() {75, 100, 75}, wardrobes);
+            Assert.Contains(new List<int>() {100, 75, 75}, wardrobes);
+            Assert.Contains(new List<int>() {75, 75, 50, 50}, wardrobes);
+            Assert.Contains(new List<int>() {75, 50, 75, 50}, wardrobes);
+            Assert.Contains(new List<int>() {75, 50, 50, 75}, wardrobes);
+            Assert.Contains(new List<int>() {50, 75, 75, 50}, wardrobes);
+            Assert.Contains(new List<int>() {50, 75, 50, 75}, wardrobes);
+            Assert.Contains(new List<int>() {50, 50, 75, 75}, wardrobes);
+        }
     }
 }
