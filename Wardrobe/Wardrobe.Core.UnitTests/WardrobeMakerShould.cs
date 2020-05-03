@@ -37,7 +37,7 @@ namespace Wardrobe.Core.UnitTests
         }
 
         [Fact]
-        public void GivenAWardrobeMaker_WhenGettingCombinationsOfNegativeSizedWall_ThenAnExceptionIsThrown()
+        public void GivenAWardrobeMaker_WhenCombiningOfNegativeSizedWall_ThenAnExceptionIsThrown()
         {
             var wardrobeMaker = new WardrobeMaker(new List<int>() { 1 });
             var exception = Assert.Throws<ArgumentException>(() => wardrobeMaker.GetCombinations(-1));
@@ -47,11 +47,61 @@ namespace Wardrobe.Core.UnitTests
         [Theory]
         [InlineData(1)]
         [InlineData(100)]
-        public void GivenAWardrobeMaker_WhenGettingCombinationsOfZeroSizedWall_ThenAnEmptyListIsReturned(int anySize)
+        public void GivenAWardrobeMaker_WhenCombiningOfZeroSizedWall_ThenAnEmptyListIsReturned(int anySize)
         {
             var wardrobeMaker = new WardrobeMaker(new List<int>() { anySize });
             var wardrobes = wardrobeMaker.GetCombinations(0);
             Assert.Empty(wardrobes);
         }
+
+        [Fact]
+        public void GivenAWardrobeMakerWithWardrobesOfSizeOne_WhenCombiningForOneSizedWall_ThenOneElementIsReturned()
+        {
+            var wardrobeMaker = new WardrobeMaker(new List<int>() { 1 });
+            var wardrobes = wardrobeMaker.GetCombinations(1);
+            Assert.Collection(wardrobes, e1 => Assert.Single(e1, 1));
+        }
+
+        [Fact]
+        public void GivenAWardrobeMakerWithWardrobesOfSizeOne_WhenCombiningForTwoSizedWall_ThenTwoElementsAreReturned()
+        {
+            var wardrobeMaker = new WardrobeMaker(new List<int>() { 1 });
+            var wardrobes = wardrobeMaker.GetCombinations(2);
+            Assert.Collection(wardrobes, e1 =>
+                Assert.Collection(e1,
+                    e11 => Assert.Equal(1, e11),
+                    e12 => Assert.Equal(1, e12)));
+        }
+
+        [Fact]
+        public void GivenAWardrobeMakerWithWardrobesOfSizeOneAndTwo_WhenCombiningForTwoSizedWall_ThenTwoElementsAreReturned()
+        {
+            var wardrobeMaker = new WardrobeMaker(new List<int>(){ 1, 2 });
+            var wardrobes = wardrobeMaker.GetCombinations(2);
+            Assert.Collection(wardrobes,
+                e1 => { Assert.Equal(1, e1[0]); Assert.Equal(1, e1[1]); },
+                e2 => { Assert.Equal(2, e2[0]); });
+        }
+
+        [Fact]
+        public void GivenAWardrobeMakerWithALargeSize_WhenCombiningForSmallWall_ThenAnEmptyListIsReturned()
+        {
+            var wardrobeMaker = new WardrobeMaker(new List<int>() { 2 });
+            var wardrobes = wardrobeMaker.GetCombinations(1);
+            Assert.Empty(wardrobes);
+        }
+        /*
+        [Fact]
+        public void GivenAWardrobeMakerWithWardrobesOfSizeOneAndTwo_WhenCombiningForFourSizedWalls_ThenFiveElementsAreReturned()
+        {
+            var wardrobeMaker = new WardrobeMaker(new List<int>() { 1, 2, });
+            var wardrobes = wardrobeMaker.GetCombinations(4);
+            Assert.Collection(wardrobes,
+                e1 => Assert.Equal(new List<int>() { 1, 1, 1, 1 }, e1),
+                e2 => Assert.Equal(new List<int>() { 1, 1, 2 }, e2),
+                e3 => Assert.Equal(new List<int>() { 1, 2, 1 }, e3),
+                e4 => Assert.Equal(new List<int>() { 2, 1, 1 }, e4),
+                e5 => Assert.Equal(new List<int>() { 2, 2 }, e5));
+        }*/
     }
 }
