@@ -154,7 +154,6 @@ namespace Wardrobe.Core
                         ? priceList[q]
                         : throw new ArgumentException(PRICE_LIST_IS_MISSING_SIZE_EXCEPTION))
                 })
-                .OrderBy(p => p.Price)
                 .Min(p => p.Price);
     }
 }
