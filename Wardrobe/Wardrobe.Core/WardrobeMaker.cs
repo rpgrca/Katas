@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,10 +6,29 @@ namespace Wardrobe.Core
 {
     public class WardrobeMaker
     {
+        private class DistinctListComparer : IEqualityComparer<List<int>>
+        {
+            public bool Equals(List<int> lhs, List<int> rhs)
+            {
+                if (lhs is null) return (rhs is null);
+                if (rhs is null) return false;
+                return lhs.Count == rhs.Count && lhs.SequenceEqual(rhs);
+            }
+
+            public int GetHashCode(List<int> obj)
+            {
+                return 0;
+            }
+        }
+
         public const string SIZE_LIST_IS_NULL_EXCEPTION = "Size list cannot be null.";
         public const string SIZE_LIST_IS_EMPTY_EXCEPTION = "Size list cannot be empty.";
-        public const string SIZE_LIST_CONTAINS_INVALID_VALUES_EXCEPTION = "Size list cannot contain zero or negative numbers.";
+
+        public const string SIZE_LIST_CONTAINS_INVALID_VALUES_EXCEPTION =
+            "Size list cannot contain zero or negative numbers.";
+
         public const string WALL_SIZE_IS_INVALID_EXCEPTION = "Wall size cannot be negative.";
+
         private readonly List<int> _sizes;
 
         public WardrobeMaker(List<int> sizes)
@@ -32,214 +50,75 @@ namespace Wardrobe.Core
                 .ToList();
         }
 
-        private void Combine(int wallSize, int[] wardrobeSizes, int currentCombination, List<List<int>> validCombinations, int[] validCombination, ref int minimumSpaceLeft)
+        private static void Combine(int wallSize, int[] wardrobeSizes, int currentIndex,
+            ICollection<List<int>> validCombinations, IList<int> currentCombination, ref int minimumSpaceLeft)
         {
-            if (currentCombination < 0)
+            if (currentIndex < 0)
             {
-                if (validCombination.Sum() != 0)
-                {
-                    var leftOver = wallSize - validCombination.Sum();
-                    if (leftOver >= 0 && leftOver < minimumSpaceLeft)
-                    {
-                        validCombinations.Clear();
-                        minimumSpaceLeft = wallSize - validCombination.Sum();
-                    }
+                if (currentCombination.Sum() == 0) return;
 
-                    if ((wallSize - validCombination.Sum() == minimumSpaceLeft))
-                    {
-                        validCombinations.Add(validCombination.ToList());
-                    }
+                var leftOver = wallSize - currentCombination.Sum();
+                if (leftOver >= 0 && leftOver < minimumSpaceLeft)
+                {
+                    validCombinations.Clear();
+                    minimumSpaceLeft = wallSize - currentCombination.Sum();
+                }
+
+                if ((wallSize - currentCombination.Sum() == minimumSpaceLeft))
+                {
+                    validCombinations.Add(currentCombination.ToList());
                 }
 
                 return;
             }
 
-            for (int index = 0; index < wardrobeSizes.Length; index++)
+            foreach (var wardrobeSize in wardrobeSizes)
             {
-                validCombination[currentCombination] = wardrobeSizes[index];
-                Combine(wallSize, wardrobeSizes, currentCombination - 1, validCombinations, validCombination, ref minimumSpaceLeft);
+                currentCombination[currentIndex] = wardrobeSize;
+                Combine(wallSize, wardrobeSizes, currentIndex - 1, validCombinations, currentCombination,
+                    ref minimumSpaceLeft);
             }
         }
-        
+
         public List<List<int>> GetCombinations(int wallSize)
         {
-             var combinations = new List<List<int>>();
- 
-             if (wallSize < 0)
-             {
-                 throw new ArgumentException(WALL_SIZE_IS_INVALID_EXCEPTION);
-             }
- 
-             if (wallSize == 0)
-             {
-                 return combinations;
-             }
- 
-             var maximumCombinations = GetMaximumCombinations(wallSize);
-             var sizesThatFitInWalls = _sizes
-                 .Where(p => p <= wallSize)
-                 .ToList();
-             sizesThatFitInWalls.Insert(0, 0);
-             var minimumLeftOverSize = wallSize;
-             var indexes = new int[sizesThatFitInWalls.Count];
+            if (wallSize < 0) throw new ArgumentException(WALL_SIZE_IS_INVALID_EXCEPTION);
 
-             Combine(wallSize, sizesThatFitInWalls.ToArray(), GetMaximumCombinations(wallSize) - 1, combinations,
-                 new int[GetMaximumCombinations(wallSize)], ref minimumLeftOverSize);
-
-             combinations
-                 .ForEach(p => p.RemoveAll(q => q == 0));
-
-             return combinations
-                 .OrderBy(p => p[0])
-                 .ToList()
-                 .Distinct(new DistinctListComparer())
-                 .ToList();
-
-             /*
-             for (var i = 0; i < sizesThatFitInWalls.Count * maximumCombinations; i++)
-             {
-                 var wardrobeSample = new List<int>();
-                 for (var j = 0; j < maximumCombinations; j++)
-                 {
-                     var c = (j * maximumCombinations);
-                     var d = 0;
-                     if (c > 0)
-                     {
-                         d = i / c;
-                     }
-                     
-                     
-                     var d = 0;
-                     if (c != 0)
-                     {
-                         d = i / c;
-                     }
-                     else
-                     {
-                         d = i;
-                     }
-                     var e = d % maximumCombinations;
-                     
-                     wardrobeSample.Add(sizesThatFitInWalls[e]);
-                 }
-
-                 if (wardrobeSample.Sum() == 0 || ((wallSize - wardrobeSample.Sum()) > minimumLeftOverSize))
-                 {
-                     continue;
-                 }
-
-                 if ((wallSize - wardrobeSample.Sum()) < minimumLeftOverSize)
-                 {
-                     combinations.Clear();
-                     minimumLeftOverSize = wallSize - wardrobeSample.Sum();
-                 }
-                 
-                 combinations.Add(wardrobeSample);
-             }*/
-
-             //return combinations;
-        }
-        /*
-        public List<List<int>> GetCombinations(int wallSize)
-        {
             var combinations = new List<List<int>>();
-
-            if (wallSize < 0)
-            {
-                throw new ArgumentException(WALL_SIZE_IS_INVALID_EXCEPTION);
-            }
-
-            if (wallSize == 0)
-            {
-                return combinations;
-            }
+            if (wallSize == 0) return combinations;
 
             var maximumCombinations = GetMaximumCombinations(wallSize);
-            var sizesThatFitInWalls = _sizes.Where(p => p <= wallSize).ToList();
+            var sizesThatFitInWalls = GetSizesThatFitInWall(wallSize);
+
+            AddZeroPlaceholder(sizesThatFitInWalls);
             var minimumLeftOverSize = wallSize;
 
-            foreach (var size1 in sizesThatFitInWalls)
-            {
-                var wardrobeSample = new List<int>() { size1 };
-                var availableSpace = wallSize - size1;
-                
-                foreach (var size2 in sizesThatFitInWalls)
-                {
-                    while (availableSpace >= size2)
-                    {
-                        wardrobeSample.Add(size2);
-                        availableSpace -= size2;
-                    }
-                }
+            Combine(wallSize, sizesThatFitInWalls.ToArray(), maximumCombinations - 1, combinations,
+                new int[maximumCombinations], ref minimumLeftOverSize);
 
-                if (availableSpace > minimumLeftOverSize)
-                {
-                    continue;
-                }
-                
-                if (availableSpace < minimumLeftOverSize)
-                {
-                    combinations.Clear();
-                }
-                
-                combinations.Add(wardrobeSample);
-                minimumLeftOverSize = availableSpace;
-            }
-            
- //           foreach (var size in sizesThatFitInWalls)
- //           {
- //               var availableSpace = wallSize;
- //               var wardrobeSample = new List<int>();
-//
- //               while (availableSpace >= size)
- //               {
- //                   wardrobeSample.Add(size);
- //                   availableSpace -= size;
-  //              }
-//
- //               if (availableSpace == 0)
-  //              {
-   //                 combinations.Add(wardrobeSample);
-    //            }
-     //       }
+            RemoveZeroPlaceholders(combinations);
+            return RemoveDuplicatedSolutions(combinations);
+        }
 
-            return combinations;
-        }*/
+        private IList<int> GetSizesThatFitInWall(int wallSize) =>
+            _sizes
+                .Where(p => p <= wallSize)
+                .ToList(); 
+
+        private static void AddZeroPlaceholder(IList<int> sizesThatFitInWalls) =>
+            sizesThatFitInWalls.Insert(0, 0);
+
+        private static List<List<int>> RemoveDuplicatedSolutions(IEnumerable<List<int>> combinations) =>
+            combinations
+                .OrderBy(p => p[0])
+                .ToList()
+                .Distinct(new DistinctListComparer())
+                .ToList();
+
+        private static void RemoveZeroPlaceholders(List<List<int>> combinations) =>
+            combinations.ForEach(p => p.RemoveAll(q => q == 0));
 
         private int GetMaximumCombinations(int wallSize) =>
             wallSize / _sizes[0];
     }
-        internal class DistinctListComparer : IEqualityComparer<List<int>>
-        {
-            public bool Equals(List<int> lhs, List<int> rhs)
-            {
-                var different = false;
-
-                if (lhs.Count == rhs.Count)
-                {
-                    //lhs.Sort();
-                    //rhs.Sort();
-
-                    for (int index = 0; index < lhs.Count; index++)
-                    {
-                        if (lhs[index] != rhs[index])
-                        {
-                            different = true;
-                        }
-                    }
-
-                    if (!different)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            public int GetHashCode(List<int> obj)
-            {
-                return 0;
-            }
-        }
 }
