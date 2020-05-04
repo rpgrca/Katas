@@ -41,21 +41,6 @@ namespace TicTacToe.Core
             new [] { 0, 4, 8 }, new [] { 2, 4, 6 }
         };
 
-        public Result GetResult()
-        {
-            foreach (var winningCombination in _winningCombinations)
-            {
-                if (_board[winningCombination[0]] == _board[winningCombination[1]] &&
-                    _board[winningCombination[1]] == _board[winningCombination[2]] &&
-                    _board[winningCombination[0]] != PlayerSquare.N)
-                {
-                    return PlayerToResult(_board[winningCombination[0]]);
-                }
-            }
-
-            return Result.Draw;
-        }
-        /*
         public Result GetResult() =>
             _winningCombinations
                 .Where(p =>
@@ -63,7 +48,7 @@ namespace TicTacToe.Core
                     _board[p[1]] == _board[p[2]] &&
                     _board[p[0]] != PlayerSquare.N)
                 .Select(p => PlayerToResult(_board[p[0]]))
-                .Single();*/
+                .FirstOrDefault();
 
         private static Result PlayerToResult(PlayerSquare square) =>
             square switch
@@ -90,11 +75,6 @@ namespace TicTacToe.Core
                 throw new ArgumentException(PLAYER_MOVEMENT_IS_INVALID_EXCEPTION);
             }
 
-            if (!HasFreeSquares())
-            {
-                throw new ArgumentException(PLAYER_MOVEMENT_IS_INVALID_EXCEPTION);
-            }
-
             if (GetResult() != Result.Draw)
             {
                 throw new ArgumentException(PLAYER_MOVEMENT_IS_INVALID_EXCEPTION);
@@ -103,8 +83,5 @@ namespace TicTacToe.Core
             _board[movement] = (PlayerSquare)player;
             _currentPlayer = _currentPlayer == Player.O ? Player.X : Player.O;
         }
-
-        private bool HasFreeSquares() =>
-            _board.Any(p => p == PlayerSquare.N);
     }
 }
