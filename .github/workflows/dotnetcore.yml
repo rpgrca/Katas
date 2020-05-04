@@ -40,5 +40,8 @@ jobs:
     - name: Testing Wardrobe.Core Library
       run: coverlet Wardrobe/Wardrobe.Core.UnitTests/bin/Debug/netcoreapp3.0/Wardrobe.Core.UnitTests.dll --target "dotnet" --targetargs "test Wardrobe/Wardrobe.Core.UnitTests/Wardrobe.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output wardrobe.coverage.xml
 
+    - name: Testing TicTacToe.Core Library
+      run: coverlet TicTacToe/TicTacToe.Core.UnitTests/bin/Debug/netcoreapp3.0/TicTacToe.Core.UnitTests.dll --target "dotnet" --targetargs "test TicTacToe/TicTacToe.Core.UnitTests/TicTacToe.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output tictactoe.coverage.xml
+
     - name: Upload
       run: bash <(curl -s https://codecov.io/bash)
