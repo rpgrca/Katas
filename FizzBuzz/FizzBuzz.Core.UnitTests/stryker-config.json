@@ -3,8 +3,8 @@
     {
         "test-runner": "vstest",
         "reporters": [ "progress", "cleartext", "html" ],
-        "solution-path": "..\\BowlingGame.sln",
-        "project-file": "BowlingGame.Core.csproj",
+        "solution-path": "..\\FizzBuzz.sln",
+        "project-file": "FizzBuzz.Core.csproj",
         "ignore-methods": ["ConfigureAwait", "Dispose"],
         "coverage-analysis": "all"
     }

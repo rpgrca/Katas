@@ -3,7 +3,7 @@
     {
         "test-runner": "vstest",
         "reporters": [ "progress", "cleartext", "html" ],
-        "solution-path": "..\\Wardrobe.sln",
+        "solution-path": "..\\TicTacToe.sln",
         "project-file": "TicTacToe.Core.csproj",
         "ignore-methods": ["ConfigureAwait", "Dispose"],
         "coverage-analysis": "all"
