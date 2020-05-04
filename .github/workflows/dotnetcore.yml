@@ -43,7 +43,7 @@ jobs:
     - name: Testing TicTacToe.Core Library
       run: coverlet TicTacToe/TicTacToe.Core.UnitTests/bin/Debug/netcoreapp3.0/TicTacToe.Core.UnitTests.dll --target "dotnet" --targetargs "test TicTacToe/TicTacToe.Core.UnitTests/TicTacToe.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output tictactoe.coverage.xml
 
-	- name: Testing PasswordVerifier.Core Library
+    - name: Testing PasswordVerifier.Core Library
       run: coverlet PasswordVerifier/PasswordVerifier.Core.UnitTests/bin/Debug/netcoreapp3.0/PasswordVerifier.Core.UnitTests.dll --target "dotnet" --targetargs "test PasswordVerifier/PasswordVerifier.Core.UnitTests/PasswordVerifier.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output passwordverifier.coverage.xml
 
     - name: Upload
