@@ -108,6 +108,10 @@ namespace PasswordVerifier.Core
                             {
                                 return rule(s);
                             }
+                            catch (FatalException)
+                            {
+                                throw;
+                            }
                             catch (Exception)
                             {
                                 return false;
@@ -126,6 +130,36 @@ namespace PasswordVerifier.Core
                     return _passwordBuilder;
                 }
             }
+        }
+
+        public class PasswordVerifierBuilderAlwaysContract
+        {
+             private readonly PasswordVerifierBuilder _passwordBuilder;
+             private readonly int _value;
+ 
+             public PasswordVerifierBuilderAlwaysContract(PasswordVerifierBuilder passwordBuilder, int value)
+             {
+                 _passwordBuilder = passwordBuilder;
+                 _value = value;
+             }
+             
+             public PasswordVerifierBuilder LowerCaseCharacters
+             {
+                 get
+                 {
+                     if (_value < 0)
+                     {
+                         throw new ArgumentException(LOWERCASE_CHARACTER_AMOUNT_IS_INVALID);
+                     }
+ 
+                     _passwordBuilder._rules.Add(s =>
+                         (s?.Count(char.IsLower) ?? 0) < _value
+                             ? throw new FatalException(PasswordVerifier.AMOUNT_OF_LOWERCASE_IS_INVALID_EXCEPTION)
+                             : true);
+ 
+                     return _passwordBuilder;
+                 }
+             }            
         }
 
         public class PasswordVerifierBuilderRequirements
@@ -150,7 +184,9 @@ namespace PasswordVerifier.Core
                     return _passwordBuilder;
                 }
             }
-                
+
+            public PasswordVerifierBuilderAlwaysContract Always(int value) =>
+                new PasswordVerifierBuilderAlwaysContract(_passwordBuilder, value);
         }
         
         public const string MINIMUM_LENGTH_IS_INVALID_EXCEPTION = "Minimum length is invalid.";
@@ -173,4 +209,5 @@ namespace PasswordVerifier.Core
         public PasswordVerifier Build() =>
             new PasswordVerifier(_rules, _verificator);
     }
+
 }
