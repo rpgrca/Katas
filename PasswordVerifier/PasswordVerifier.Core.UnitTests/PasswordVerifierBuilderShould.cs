@@ -24,5 +24,23 @@ namespace PasswordVerifier.Core.UnitTests
                 passwordVerifierBuilder.RequireAtLeast(-1).UpperCaseCharacters());
             Assert.Equal(PasswordVerifierBuilder.UPPERCASE_CHARACTER_AMOUNT_IS_INVALID, exception.Message);
         }
+
+        [Fact]
+        public void GivenANewPasswordVerifierBuilder_WhenAddingInvalidLowercase_ThenAnExceptionIsThrown()
+        {
+            var passwordVerifierBuilder = new PasswordVerifierBuilder();
+            var exception = Assert.Throws<ArgumentException>(() =>
+                passwordVerifierBuilder.RequireAtLeast(-1).LowerCaseCharacters());
+            Assert.Equal(PasswordVerifierBuilder.LOWERCASE_CHARACTER_AMOUNT_IS_INVALID, exception.Message);
+        }
+        
+        [Fact]
+        public void GivenANewPasswordVerifierBuilder_WhenAddingInvalidNumbers_ThenAnExceptionIsThrown()
+        {
+            var passwordVerifierBuilder = new PasswordVerifierBuilder();
+            var exception = Assert.Throws<ArgumentException>(() =>
+                passwordVerifierBuilder.RequireAtLeast(-1).Number());
+            Assert.Equal(PasswordVerifierBuilder.NUMBER_AMOUNT_IS_INVALID_EXCEPTION, exception.Message);
+        }
     }
 }

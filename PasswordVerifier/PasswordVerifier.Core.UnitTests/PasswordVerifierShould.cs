@@ -6,6 +6,13 @@ namespace PasswordVerifier.Core.UnitTests
 {
     public class PasswordVerifierShould
     {
+        [Fact]
+        public void GivenPasswordVerifier_WhenNullRulesAreGiven_ThenAnExceptionIsThrown()
+        {
+            var exception = Assert.Throws<ArgumentException>(() => new PasswordVerifier(null));
+            Assert.Equal(PasswordVerifier.RULES_IS_NULL_EXCEPTION, exception.Message);
+        }
+        
         [Theory]
         [InlineData("anyPassword")]
         [InlineData("")]
@@ -66,6 +73,50 @@ namespace PasswordVerifier.Core.UnitTests
                 .Build();
 
             var result = passwordVerifier.Verify("validPassword");
+            Assert.True(result);
+        }
+        
+        [Fact]
+        public void GivenPasswordVerifierWithLowerCaseRule_WhenGivingPasswordWithoutLowerCaseLetter_ThenAnExceptionIsThrown()
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .RequireAtLeast(1).LowerCaseCharacters()
+                .Build();
+        
+            var exception = Assert.Throws<ArgumentException>(() => passwordVerifier.Verify("INVALID PASSWORD"));
+            Assert.Equal(PasswordVerifier.AMOUNT_OF_LOWERCASE_IS_INVALID_EXCEPTION, exception.Message);
+        }
+
+        [Fact]
+        public void GivenPasswordVerifierWithLowerCaseRule_WhenGivingPasswordWithLowerCaseLetter_ThenItsVerified()
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .RequireAtLeast(1).LowerCaseCharacters()
+                .Build();
+
+            var result = passwordVerifier.Verify("VALID pASSWORD");
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void GivenPasswordVerifierWithNumberRule_WhenGivingPasswordWithoutNumber_ThenAnExceptionIsThrown()
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .RequireAtLeast(1).Number()
+                .Build();
+
+            var exception = Assert.Throws<ArgumentException>(() => passwordVerifier.Verify("invalid password"));
+            Assert.Equal(PasswordVerifier.AMOUNT_OF_NUMBERS_IS_INVALID_EXCEPTION, exception.Message);
+        }
+
+        [Fact]
+        public void GivenPasswordVerifierWithNumberRule_WhenGivingPasswordWithNumber_ThenItsVerified()
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .RequireAtLeast(1).Number()
+                .Build();
+
+            var result = passwordVerifier.Verify("v4lid password");
             Assert.True(result);
         }
     }

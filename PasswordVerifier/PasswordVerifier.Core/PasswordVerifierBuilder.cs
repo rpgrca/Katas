@@ -41,15 +41,47 @@ namespace PasswordVerifier.Core
 
                 _passwordBuilder._rules.Add(s =>
                     s.Count(char.IsUpper) < _value
-                    ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_UPPERCASE_IS_INVALID_EXCEPTION)
+                        ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_UPPERCASE_IS_INVALID_EXCEPTION)
+                        : true);
+
+                return _passwordBuilder;
+            }
+
+            public PasswordVerifierBuilder LowerCaseCharacters()
+            {
+                if (_value < 0)
+                {
+                    throw new ArgumentException(LOWERCASE_CHARACTER_AMOUNT_IS_INVALID);
+                }
+
+                _passwordBuilder._rules.Add(s =>
+                    s.Count(char.IsLower) < _value
+                        ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_LOWERCASE_IS_INVALID_EXCEPTION)
+                        : true);
+
+                return _passwordBuilder;
+            }
+
+            public PasswordVerifierBuilder Number()
+            {
+                if (_value < 0)
+                {
+                    throw new ArgumentException(NUMBER_AMOUNT_IS_INVALID_EXCEPTION);
+                }
+                
+                _passwordBuilder._rules.Add(s =>
+                    s.Count(char.IsNumber) < _value
+                    ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_NUMBERS_IS_INVALID_EXCEPTION)
                     : true);
 
                 return _passwordBuilder;
             }
         }
-        
+
         public const string MINIMUM_LENGTH_IS_INVALID_EXCEPTION = "Minimum length is invalid.";
         public const string UPPERCASE_CHARACTER_AMOUNT_IS_INVALID = "Minimum amount of uppercase characters is invalid.";
+        public const string LOWERCASE_CHARACTER_AMOUNT_IS_INVALID = "Minimum amount of lowercase characters is invalid.";
+        public const string NUMBER_AMOUNT_IS_INVALID_EXCEPTION = "Minimum amount of numbers is invalid.";
 
         private readonly List<Func<string, bool>> _rules = new List<Func<string, bool>>();
 
