@@ -13,7 +13,7 @@ namespace PasswordVerifier.Core
         public const string AMOUNT_OF_UPPERCASE_IS_INVALID_EXCEPTION = "Amount of uppercase characters is invalid.";
         public const string AMOUNT_OF_LOWERCASE_IS_INVALID_EXCEPTION = "Amount of lowercase characters is invalid.";
         public const string AMOUNT_OF_NUMBERS_IS_INVALID_EXCEPTION = "Amount of numeric characters is invalid.";
-        public const string DID_NOT_FULLFILL_MINIMUM_REQUIREMENT_EXCEPTION = "Did not pass enough validations.";
+        public const string DID_NOT_FULFILL_MINIMUM_REQUIREMENT_EXCEPTION = "Did not pass enough validations.";
 
         private readonly List<Func<string, bool>> _rules;
         private Func<List<Func<string, bool>>, string, bool> _verificationMethod;

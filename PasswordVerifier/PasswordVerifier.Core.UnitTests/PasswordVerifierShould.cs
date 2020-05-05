@@ -168,7 +168,7 @@ namespace PasswordVerifier.Core.UnitTests
                 .Build();
 
             var exception = Assert.Throws<ArgumentException>(() => passwordVerifier.Verify("UUAABB"));
-            Assert.Equal(PasswordVerifier.DID_NOT_FULLFILL_MINIMUM_REQUIREMENT_EXCEPTION, exception.Message);
+            Assert.Equal(PasswordVerifier.DID_NOT_FULFILL_MINIMUM_REQUIREMENT_EXCEPTION, exception.Message);
         }
 
         [Fact]
@@ -200,7 +200,7 @@ namespace PasswordVerifier.Core.UnitTests
                 .Build();
 
             var exception = Assert.Throws<ArgumentException>(() => passwordVerifier.Verify("UUAAbbb"));
-            Assert.Equal(PasswordVerifier.DID_NOT_FULLFILL_MINIMUM_REQUIREMENT_EXCEPTION, exception.Message);
+            Assert.Equal(PasswordVerifier.DID_NOT_FULFILL_MINIMUM_REQUIREMENT_EXCEPTION, exception.Message);
         }
         
         [Fact]

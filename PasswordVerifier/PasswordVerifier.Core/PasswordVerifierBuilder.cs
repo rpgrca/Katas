@@ -108,7 +108,7 @@ namespace PasswordVerifier.Core
                             {
                                 return rule(s);
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
                                 return false;
                             }
@@ -120,7 +120,7 @@ namespace PasswordVerifier.Core
 
                     _passwordBuilder._verificator = (r, s) =>
                         r.Count(q => q(s)) < _value
-                            ? throw new ArgumentException(PasswordVerifier.DID_NOT_FULLFILL_MINIMUM_REQUIREMENT_EXCEPTION)
+                            ? throw new ArgumentException(PasswordVerifier.DID_NOT_FULFILL_MINIMUM_REQUIREMENT_EXCEPTION)
                             : true;
 
                     return _passwordBuilder;

@@ -42,5 +42,14 @@ namespace PasswordVerifier.Core.UnitTests
                 passwordVerifierBuilder.Require.AtLeast(-1).Numbers);
             Assert.Equal(PasswordVerifierBuilder.NUMBER_AMOUNT_IS_INVALID_EXCEPTION, exception.Message);
         }
+
+        [Fact]
+        public void GivenANewPasswordVerifierBuilder_WhenAddingInvalidPassingRules_ThenAnExceptionIsThrown()
+        {
+            var passwordVerifierBuilder = new PasswordVerifierBuilder();
+            var exception = Assert.Throws<ArgumentException>(() => 
+                passwordVerifierBuilder.Require.AtLeast(-1).PassingRules);
+            Assert.Equal(PasswordVerifierBuilder.NUMBER_OF_MINIMUM_REQUIREMENTS_IS_INVALID_EXCEPTION, exception.Message);
+        }
     }
 }
