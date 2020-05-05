@@ -6,89 +6,171 @@ namespace PasswordVerifier.Core
 {
     public class PasswordVerifierBuilder
     {
-        public class PasswordVerifierBuilderContract
+        public class PasswordVerifierBuilderAtLeastContract
         {
             private readonly PasswordVerifierBuilder _passwordBuilder;
             private readonly int _value;
 
-            public PasswordVerifierBuilderContract(PasswordVerifierBuilder passwordBuilder, int value)
+            public PasswordVerifierBuilderAtLeastContract(PasswordVerifierBuilder passwordBuilder, int value)
             {
                 _passwordBuilder = passwordBuilder;
                 _value = value;
             }
 
-            public PasswordVerifierBuilder CharactersInTotal()
+            public PasswordVerifierBuilder CharactersInTotal
             {
-                if (_value < 1)
+                get
                 {
-                    throw new ArgumentException(MINIMUM_LENGTH_IS_INVALID_EXCEPTION);
+                    if (_value < 1)
+                    {
+                        throw new ArgumentException(MINIMUM_LENGTH_IS_INVALID_EXCEPTION);
+                    }
+
+                    _passwordBuilder._rules.Add(s =>
+                        s.Length < _value
+                            ? throw new ArgumentException(PasswordVerifier.PASSWORD_LENGTH_IS_INVALID_EXCEPTION)
+                            : true);
+
+                    return _passwordBuilder;
                 }
-
-                _passwordBuilder._rules.Add(s =>
-                    s.Length < _value
-                    ? throw new ArgumentException(PasswordVerifier.PASSWORD_LENGTH_IS_INVALID_EXCEPTION)
-                    : true);
-
-                return _passwordBuilder;
             }
 
-            public PasswordVerifierBuilder UpperCaseCharacters()
+            public PasswordVerifierBuilder UpperCaseCharacters
             {
-                if (_value < 0)
+                get
                 {
-                    throw new ArgumentException(UPPERCASE_CHARACTER_AMOUNT_IS_INVALID);
+                    if (_value < 0)
+                    {
+                        throw new ArgumentException(UPPERCASE_CHARACTER_AMOUNT_IS_INVALID);
+                    }
+
+                    _passwordBuilder._rules.Add(s =>
+                        s.Count(char.IsUpper) < _value
+                            ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_UPPERCASE_IS_INVALID_EXCEPTION)
+                            : true);
+
+                    return _passwordBuilder;
                 }
-
-                _passwordBuilder._rules.Add(s =>
-                    s.Count(char.IsUpper) < _value
-                        ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_UPPERCASE_IS_INVALID_EXCEPTION)
-                        : true);
-
-                return _passwordBuilder;
             }
 
-            public PasswordVerifierBuilder LowerCaseCharacters()
+            public PasswordVerifierBuilder LowerCaseCharacters
             {
-                if (_value < 0)
+                get
                 {
-                    throw new ArgumentException(LOWERCASE_CHARACTER_AMOUNT_IS_INVALID);
+                    if (_value < 0)
+                    {
+                        throw new ArgumentException(LOWERCASE_CHARACTER_AMOUNT_IS_INVALID);
+                    }
+
+                    _passwordBuilder._rules.Add(s =>
+                        s.Count(char.IsLower) < _value
+                            ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_LOWERCASE_IS_INVALID_EXCEPTION)
+                            : true);
+
+                    return _passwordBuilder;
                 }
-
-                _passwordBuilder._rules.Add(s =>
-                    s.Count(char.IsLower) < _value
-                        ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_LOWERCASE_IS_INVALID_EXCEPTION)
-                        : true);
-
-                return _passwordBuilder;
             }
 
-            public PasswordVerifierBuilder Number()
+            public PasswordVerifierBuilder Numbers
             {
-                if (_value < 0)
+                get
                 {
-                    throw new ArgumentException(NUMBER_AMOUNT_IS_INVALID_EXCEPTION);
-                }
-                
-                _passwordBuilder._rules.Add(s =>
-                    s.Count(char.IsNumber) < _value
-                    ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_NUMBERS_IS_INVALID_EXCEPTION)
-                    : true);
+                    if (_value < 0)
+                    {
+                        throw new ArgumentException(NUMBER_AMOUNT_IS_INVALID_EXCEPTION);
+                    }
 
-                return _passwordBuilder;
+                    _passwordBuilder._rules.Add(s =>
+                        s.Count(char.IsNumber) < _value
+                            ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_NUMBERS_IS_INVALID_EXCEPTION)
+                            : true);
+
+                    return _passwordBuilder;
+                }
+            }
+
+            public PasswordVerifierBuilder PassingRules
+            {
+                get
+                {
+                    if (_value < 0)
+                    {
+                        throw new ArgumentException(NUMBER_OF_MINIMUM_REQUIREMENTS_IS_INVALID_EXCEPTION);
+                    }
+                    
+                    var newRules = new List<Func<string, bool>>();
+
+                    foreach (var rule in _passwordBuilder._rules)
+                    {
+                        newRules.Add(s =>
+                        {
+                            try
+                            {
+                                return rule(s);
+                            }
+                            catch (Exception ex)
+                            {
+                                return false;
+                            }
+                        });
+                    }
+
+                    _passwordBuilder._rules.Clear();
+                    _passwordBuilder._rules.AddRange(newRules);
+
+                    _passwordBuilder._verificator = (r, s) =>
+                        r.Count(q => q(s)) < _value
+                            ? throw new ArgumentException(PasswordVerifier.DID_NOT_FULLFILL_MINIMUM_REQUIREMENT_EXCEPTION)
+                            : true;
+
+                    return _passwordBuilder;
+                }
             }
         }
 
+        public class PasswordVerifierBuilderRequirements
+        {
+            private readonly PasswordVerifierBuilder _passwordBuilder;
+
+            public PasswordVerifierBuilderRequirements(PasswordVerifierBuilder passwordBuilder) =>
+                _passwordBuilder = passwordBuilder;
+
+            public PasswordVerifierBuilderAtLeastContract AtLeast(int value) =>
+                new PasswordVerifierBuilderAtLeastContract(_passwordBuilder, value);
+
+            public PasswordVerifierBuilder NonNull
+            {
+                get
+                {
+                    _passwordBuilder._rules.Add(s =>
+                        s is null
+                    ? throw new ArgumentException(PasswordVerifier.PASSWORD_IS_NULL_EXCEPTION)
+                    : true);
+
+                    return _passwordBuilder;
+                }
+            }
+                
+        }
+        
         public const string MINIMUM_LENGTH_IS_INVALID_EXCEPTION = "Minimum length is invalid.";
         public const string UPPERCASE_CHARACTER_AMOUNT_IS_INVALID = "Minimum amount of uppercase characters is invalid.";
         public const string LOWERCASE_CHARACTER_AMOUNT_IS_INVALID = "Minimum amount of lowercase characters is invalid.";
         public const string NUMBER_AMOUNT_IS_INVALID_EXCEPTION = "Minimum amount of numbers is invalid.";
+        public const string NUMBER_OF_MINIMUM_REQUIREMENTS_IS_INVALID_EXCEPTION = "Minimum requirements is invalid.";
 
         private readonly List<Func<string, bool>> _rules = new List<Func<string, bool>>();
+        private Func<List<Func<string, bool>>, string, bool> _verificator =
+            (p, s) =>
+            {
+                p.ForEach(q => q(s));
+                return true;
+            };
 
-        public PasswordVerifierBuilderContract RequireAtLeast(int amount) =>
-            new PasswordVerifierBuilderContract(this, amount);
-
+        public PasswordVerifierBuilderRequirements Require =>
+            new PasswordVerifierBuilderRequirements(this);
+        
         public PasswordVerifier Build() =>
-            new PasswordVerifier(_rules);
+            new PasswordVerifier(_rules, _verificator);
     }
 }

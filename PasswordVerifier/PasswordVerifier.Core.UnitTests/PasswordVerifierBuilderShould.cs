@@ -12,7 +12,7 @@ namespace PasswordVerifier.Core.UnitTests
         {
             var passwordVerifierBuilder = new PasswordVerifierBuilder();
             var exception = Assert.Throws<ArgumentException>(() =>
-                passwordVerifierBuilder.RequireAtLeast(invalidLength).CharactersInTotal());
+                passwordVerifierBuilder.Require.AtLeast(invalidLength).CharactersInTotal);
             Assert.Equal(PasswordVerifierBuilder.MINIMUM_LENGTH_IS_INVALID_EXCEPTION, exception.Message);
         }
 
@@ -21,7 +21,7 @@ namespace PasswordVerifier.Core.UnitTests
         {
             var passwordVerifierBuilder = new PasswordVerifierBuilder();
             var exception = Assert.Throws<ArgumentException>(() =>
-                passwordVerifierBuilder.RequireAtLeast(-1).UpperCaseCharacters());
+                passwordVerifierBuilder.Require.AtLeast(-1).UpperCaseCharacters);
             Assert.Equal(PasswordVerifierBuilder.UPPERCASE_CHARACTER_AMOUNT_IS_INVALID, exception.Message);
         }
 
@@ -30,7 +30,7 @@ namespace PasswordVerifier.Core.UnitTests
         {
             var passwordVerifierBuilder = new PasswordVerifierBuilder();
             var exception = Assert.Throws<ArgumentException>(() =>
-                passwordVerifierBuilder.RequireAtLeast(-1).LowerCaseCharacters());
+                passwordVerifierBuilder.Require.AtLeast(-1).LowerCaseCharacters);
             Assert.Equal(PasswordVerifierBuilder.LOWERCASE_CHARACTER_AMOUNT_IS_INVALID, exception.Message);
         }
         
@@ -39,7 +39,7 @@ namespace PasswordVerifier.Core.UnitTests
         {
             var passwordVerifierBuilder = new PasswordVerifierBuilder();
             var exception = Assert.Throws<ArgumentException>(() =>
-                passwordVerifierBuilder.RequireAtLeast(-1).Number());
+                passwordVerifierBuilder.Require.AtLeast(-1).Numbers);
             Assert.Equal(PasswordVerifierBuilder.NUMBER_AMOUNT_IS_INVALID_EXCEPTION, exception.Message);
         }
     }
