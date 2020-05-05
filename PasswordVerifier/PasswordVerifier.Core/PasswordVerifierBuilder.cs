@@ -21,13 +21,13 @@ namespace PasswordVerifier.Core
             {
                 get
                 {
-                    if (_value < 1)
+                    if (_value < 0)
                     {
                         throw new ArgumentException(MINIMUM_LENGTH_IS_INVALID_EXCEPTION);
                     }
 
                     _passwordBuilder._rules.Add(s =>
-                        s.Length < _value
+                        (s?.Length ?? 0) < _value
                             ? throw new ArgumentException(PasswordVerifier.PASSWORD_LENGTH_IS_INVALID_EXCEPTION)
                             : true);
 
@@ -45,7 +45,7 @@ namespace PasswordVerifier.Core
                     }
 
                     _passwordBuilder._rules.Add(s =>
-                        s.Count(char.IsUpper) < _value
+                        (s?.Count(char.IsUpper) ?? 0) < _value
                             ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_UPPERCASE_IS_INVALID_EXCEPTION)
                             : true);
 
@@ -63,7 +63,7 @@ namespace PasswordVerifier.Core
                     }
 
                     _passwordBuilder._rules.Add(s =>
-                        s.Count(char.IsLower) < _value
+                        (s?.Count(char.IsLower) ?? 0) < _value
                             ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_LOWERCASE_IS_INVALID_EXCEPTION)
                             : true);
 
@@ -81,7 +81,7 @@ namespace PasswordVerifier.Core
                     }
 
                     _passwordBuilder._rules.Add(s =>
-                        s.Count(char.IsNumber) < _value
+                        (s?.Count(char.IsNumber) ?? 0) < _value
                             ? throw new ArgumentException(PasswordVerifier.AMOUNT_OF_NUMBERS_IS_INVALID_EXCEPTION)
                             : true);
 
@@ -93,7 +93,7 @@ namespace PasswordVerifier.Core
             {
                 get
                 {
-                    if (_value < 0)
+                    if (_value <= 0)
                     {
                         throw new ArgumentException(NUMBER_OF_MINIMUM_REQUIREMENTS_IS_INVALID_EXCEPTION);
                     }

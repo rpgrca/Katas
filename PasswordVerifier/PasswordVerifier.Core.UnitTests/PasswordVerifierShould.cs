@@ -25,6 +25,7 @@ namespace PasswordVerifier.Core.UnitTests
         [Theory]
         [InlineData("anyPassword")]
         [InlineData("")]
+        [InlineData(null)]
         public void GivenPasswordVerifierWithoutRules_WhenGivenAnyPassword_ThenItsVerified(string anyPassword)
         {
             var passwordVerifier = new PasswordVerifierBuilder()
@@ -33,19 +34,13 @@ namespace PasswordVerifier.Core.UnitTests
             Assert.True(result);
         }
 
-        [Fact]
-        public void GivenAPasswordVerifierWithoutRules_WhenUsingNullPassword_ThenItsVerified()
+        [Theory]
+        [InlineData("short")]
+        [InlineData("12345678")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void GivenPasswordVerifierWithLengthRule_WhenGivingShorterPassword_ThenAnExceptionIsThrown(string shortPassword)
         {
-            var passwordVerifier = new PasswordVerifierBuilder()
-                .Build();
-            var result = passwordVerifier.Verify(null);
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void GivenPasswordVerifierWithLengthRule_WhenGivingShorterPassword_ThenAnExceptionIsThrown()
-        {
-            const string shortPassword = "short";
             var passwordVerifier = new PasswordVerifierBuilder()
                 .Require.AtLeast(9).CharactersInTotal
                 .Build();
@@ -54,6 +49,19 @@ namespace PasswordVerifier.Core.UnitTests
             Assert.Equal(PasswordVerifier.PASSWORD_LENGTH_IS_INVALID_EXCEPTION, exception.Message);
         }
 
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void GivenANewPasswordVerifierBuilder_WhenAddingZeroLength_ThenItsAccepted(string zeroLengthPassword)
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .Require.AtLeast(0).CharactersInTotal
+                .Build();
+
+            var result = passwordVerifier.Verify(zeroLengthPassword);
+            Assert.True(result);
+        }
+ 
         [Fact]
         public void GivenPasswordVerifierWithLengthRule_WhenGivingCorrectPassword_ThenItVerifiesCorrectly()
         {
@@ -65,15 +73,29 @@ namespace PasswordVerifier.Core.UnitTests
             Assert.True(result);
         }
 
-        [Fact]
-        public void GivenPasswordVerifierWithUpperCaseRule_WhenGivingPasswordWithoutUpperCaseLetter_ThenAnExceptionIsThrown()
+        [Theory]
+        [InlineData("invalid password")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void GivenPasswordVerifierWithUpperCaseRule_WhenGivingPasswordWithoutUpperCaseLetter_ThenAnExceptionIsThrown(string invalidPassword)
         {
             var passwordVerifier = new PasswordVerifierBuilder()
                 .Require.AtLeast(1).UpperCaseCharacters
                 .Build();
 
-            var exception = Assert.Throws<ArgumentException>(() => passwordVerifier.Verify("invalid password"));
+            var exception = Assert.Throws<ArgumentException>(() => passwordVerifier.Verify(invalidPassword));
             Assert.Equal(PasswordVerifier.AMOUNT_OF_UPPERCASE_IS_INVALID_EXCEPTION, exception.Message);
+        }
+
+        [Fact]
+        public void GivenPasswordVerifierWithUpperCaseZeroRule_WhenGivingPasswordWithoutUpperCaseLetter_ThenItVerifiesCorrectly()
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .Require.AtLeast(0).UpperCaseCharacters
+                .Build();
+
+            var result = passwordVerifier.Verify("valid password");
+            Assert.True(result);
         }
 
         [Fact]
@@ -87,14 +109,17 @@ namespace PasswordVerifier.Core.UnitTests
             Assert.True(result);
         }
         
-        [Fact]
-        public void GivenPasswordVerifierWithLowerCaseRule_WhenGivingPasswordWithoutLowerCaseLetter_ThenAnExceptionIsThrown()
+        [Theory]
+        [InlineData("INVALID PASSWORD")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void GivenPasswordVerifierWithLowerCaseRule_WhenGivingPasswordWithoutLowerCaseLetter_ThenAnExceptionIsThrown(string invalidPassword)
         {
             var passwordVerifier = new PasswordVerifierBuilder()
                 .Require.AtLeast(1).LowerCaseCharacters
                 .Build();
         
-            var exception = Assert.Throws<ArgumentException>(() => passwordVerifier.Verify("INVALID PASSWORD"));
+            var exception = Assert.Throws<ArgumentException>(() => passwordVerifier.Verify(invalidPassword));
             Assert.Equal(PasswordVerifier.AMOUNT_OF_LOWERCASE_IS_INVALID_EXCEPTION, exception.Message);
         }
 
@@ -110,13 +135,27 @@ namespace PasswordVerifier.Core.UnitTests
         }
 
         [Fact]
-        public void GivenPasswordVerifierWithNumberRule_WhenGivingPasswordWithoutNumber_ThenAnExceptionIsThrown()
+        public void GivenPasswordVerifierWithLowerCaseZeroRule_WhenGivingPasswordWithLowerCaseLetter_ThenItsVerified()
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .Require.AtLeast(0).LowerCaseCharacters
+                .Build();
+
+            var result = passwordVerifier.Verify("VALID PASSWORD");
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData("invalid password")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void GivenPasswordVerifierWithNumberRule_WhenGivingPasswordWithoutNumber_ThenAnExceptionIsThrown(string invalidPassword)
         {
             var passwordVerifier = new PasswordVerifierBuilder()
                 .Require.AtLeast(1).Numbers
                 .Build();
 
-            var exception = Assert.Throws<ArgumentException>(() => passwordVerifier.Verify("invalid password"));
+            var exception = Assert.Throws<ArgumentException>(() => passwordVerifier.Verify(invalidPassword));
             Assert.Equal(PasswordVerifier.AMOUNT_OF_NUMBERS_IS_INVALID_EXCEPTION, exception.Message);
         }
 
@@ -128,6 +167,17 @@ namespace PasswordVerifier.Core.UnitTests
                 .Build();
 
             var result = passwordVerifier.Verify("v4lid password");
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void GivenPasswordVerifierWithNumberZeroRule_WhenGivingPasswordWithNumber_ThenItsVerified()
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .Require.AtLeast(0).Numbers
+                .Build();
+
+            var result = passwordVerifier.Verify("Valid password");
             Assert.True(result);
         }
 
@@ -216,6 +266,22 @@ namespace PasswordVerifier.Core.UnitTests
                 .Build();
 
             var result = passwordVerifier.Verify("UUAAbbb");
+            Assert.True(result);
+        }
+        
+        [Fact]
+        public void GivenPasswordVerifierWith5OutOf5_WhenGivingZeroFailing_ThenVerificationPasses()
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .Require.AtLeast(8).CharactersInTotal
+                .Require.AtLeast(2).UpperCaseCharacters
+                .Require.AtLeast(2).Numbers
+                .Require.AtLeast(3).LowerCaseCharacters
+                .Require.NonNull
+                .Require.AtLeast(5).PassingRules
+                .Build();
+
+            var result = passwordVerifier.Verify("Super_Password123");
             Assert.True(result);
         }
     }

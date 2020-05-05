@@ -6,7 +6,6 @@ namespace PasswordVerifier.Core.UnitTests
     public class PasswordVerifierBuilderShould
     {
         [Theory]
-        [InlineData(0)]
         [InlineData(-1)]
         public void GivenANewPasswordVerifierBuilder_WhenAddingInvalidLength_ThenAnExceptionIsThrown(int invalidLength)
         {
@@ -43,12 +42,14 @@ namespace PasswordVerifier.Core.UnitTests
             Assert.Equal(PasswordVerifierBuilder.NUMBER_AMOUNT_IS_INVALID_EXCEPTION, exception.Message);
         }
 
-        [Fact]
-        public void GivenANewPasswordVerifierBuilder_WhenAddingInvalidPassingRules_ThenAnExceptionIsThrown()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void GivenANewPasswordVerifierBuilder_WhenAddingInvalidPassingRules_ThenAnExceptionIsThrown(int rules)
         {
             var passwordVerifierBuilder = new PasswordVerifierBuilder();
             var exception = Assert.Throws<ArgumentException>(() => 
-                passwordVerifierBuilder.Require.AtLeast(-1).PassingRules);
+                passwordVerifierBuilder.Require.AtLeast(rules).PassingRules);
             Assert.Equal(PasswordVerifierBuilder.NUMBER_OF_MINIMUM_REQUIREMENTS_IS_INVALID_EXCEPTION, exception.Message);
         }
     }
