@@ -284,5 +284,72 @@ namespace PasswordVerifier.Core.UnitTests
             var result = passwordVerifier.Verify("Super_Password123");
             Assert.True(result);
         }
+
+        [Theory]
+        [InlineData("INVALID PASSWORD")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void GivenPasswordVerifierWithRequiredRule_WhenNotFulfillingRule_ThenVerificationFails(string invalidPassword)
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .Require.Always(1).LowerCaseCharacters
+                .Build();
+
+            var exception = Assert.Throws<FatalException>(() => passwordVerifier.Verify(invalidPassword));
+            Assert.Equal(PasswordVerifier.AMOUNT_OF_LOWERCASE_IS_INVALID_EXCEPTION, exception.Message);
+        }
+
+        [Theory]
+        [InlineData(1, "valid password")]
+        [InlineData(0, "VALID PASSWORD")]
+        public void GivenPasswordVerifierWithRequiredRule_WhenFulfillingRule_ThenVerificationPasses(int minimumRequired, string expectedPassword)
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .Require.Always(minimumRequired).LowerCaseCharacters
+                .Build();
+
+            var result = passwordVerifier.Verify(expectedPassword);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void GivenPasswordVerifierWithRequiredRule_WhenValidPasswordIsGiven_ThenItsVerified()
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .Require.Always(1).LowerCaseCharacters
+                .Require.AtLeast(1).UpperCaseCharacters
+                .Require.AtLeast(1).Numbers
+                .Require.AtLeast(1).PassingRules
+                .Build();
+
+            var result = passwordVerifier.Verify("aUUUUU1");
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void GivenPasswordVerifierWithRequiredRule_WhenInvalidPasswordIsGiven_ThenItsNotVerified()
+        {
+            var passwordVerifier = new PasswordVerifierBuilder()
+                .Require.Always(1).LowerCaseCharacters
+                .Require.AtLeast(1).UpperCaseCharacters
+                .Require.AtLeast(1).Numbers
+                .Require.AtLeast(2).PassingRules
+                .Build();
+
+            var exception = Assert.Throws<FatalException>(() => passwordVerifier.Verify("AUUUUU1"));
+            Assert.Equal(PasswordVerifier.AMOUNT_OF_LOWERCASE_IS_INVALID_EXCEPTION, exception.Message);
+        }
+
+         [Fact]
+         public void GivenPasswordVerifierWithRequiredPassingRule_WhenValidPasswordIsGiven_ThenItsVerified()
+         {
+             var passwordVerifier = new PasswordVerifierBuilder()
+                 .Require.Always(1).LowerCaseCharacters
+                 .Require.AtLeast(1).PassingRules
+                 .Build();
+ 
+             var result = passwordVerifier.Verify("aUUUUU1");
+             Assert.True(result);
+         }
     }
 }

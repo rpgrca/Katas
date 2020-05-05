@@ -32,7 +32,7 @@ namespace PasswordVerifier.Core.UnitTests
                 passwordVerifierBuilder.Require.AtLeast(-1).LowerCaseCharacters);
             Assert.Equal(PasswordVerifierBuilder.LOWERCASE_CHARACTER_AMOUNT_IS_INVALID, exception.Message);
         }
-        
+
         [Fact]
         public void GivenANewPasswordVerifierBuilder_WhenAddingInvalidNumbers_ThenAnExceptionIsThrown()
         {
@@ -48,9 +48,19 @@ namespace PasswordVerifier.Core.UnitTests
         public void GivenANewPasswordVerifierBuilder_WhenAddingInvalidPassingRules_ThenAnExceptionIsThrown(int rules)
         {
             var passwordVerifierBuilder = new PasswordVerifierBuilder();
-            var exception = Assert.Throws<ArgumentException>(() => 
+            var exception = Assert.Throws<ArgumentException>(() =>
                 passwordVerifierBuilder.Require.AtLeast(rules).PassingRules);
-            Assert.Equal(PasswordVerifierBuilder.NUMBER_OF_MINIMUM_REQUIREMENTS_IS_INVALID_EXCEPTION, exception.Message);
+            Assert.Equal(PasswordVerifierBuilder.NUMBER_OF_MINIMUM_REQUIREMENTS_IS_INVALID_EXCEPTION,
+                exception.Message);
+        }
+
+        [Fact]
+        public void GivenANewPasswordVerifierBuilder_WhenAddingInvalidAlwaysLowerCaseValue_ThenAnExceptionIsThrown()
+        {
+            var passwordVerifierBuilder = new PasswordVerifierBuilder();
+            var exception = Assert.Throws<ArgumentException>(() =>
+                passwordVerifierBuilder.Require.Always(-1).LowerCaseCharacters);
+            Assert.Equal(PasswordVerifierBuilder.LOWERCASE_CHARACTER_AMOUNT_IS_INVALID, exception.Message);
         }
     }
 }
