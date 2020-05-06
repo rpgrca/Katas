@@ -13,6 +13,10 @@
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ScoreKeeper.Core\ScoreKeeper.Core.csproj" />
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Coverage' ">
     <Exec Command="dotnet tool restore" />
     <Exec Command="dotnet coverlet bin/Debug/netcoreapp3.0/ScoreKeeper.Core.UnitTests.dll --target &quot;dotnet&quot; --targetargs &quot;test ScoreKeeper.Core.UnitTests.csproj --no-build --verbosity quiet&quot; --format cobertura --output reports/coverage/coverage.cobertura.xml" />
