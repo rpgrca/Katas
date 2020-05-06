@@ -46,5 +46,8 @@ jobs:
     - name: Testing PasswordVerifier.Core Library
       run: coverlet PasswordVerifier/PasswordVerifier.Core.UnitTests/bin/Debug/netcoreapp3.0/PasswordVerifier.Core.UnitTests.dll --target "dotnet" --targetargs "test PasswordVerifier/PasswordVerifier.Core.UnitTests/PasswordVerifier.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output passwordverifier.coverage.xml
 
+    - name: Testing ScoreKeeper.Core Library
+      run: coverlet ScoreKeeper/ScoreKeeper.Core.UnitTests/bin/Debug/netcoreapp3.0/ScoreKeeper.Core.UnitTests.dll --target "dotnet" --targetargs "test ScoreKeeper/ScoreKeeper.Core.UnitTests/ScoreKeeper.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output scorekeeper.coverage.xml
+
     - name: Upload
       run: bash <(curl -s https://codecov.io/bash)
