@@ -6,13 +6,13 @@ namespace FizzBuzz.Core
 {
     public class FizzBuzz
     {
-        private bool IsFizz(int value)
+        private static bool IsFizz(int value)
             => value % 3 == 0;
 
-        private bool IsBuzz(int value)
+        private static bool IsBuzz(int value)
             => value % 5 == 0;
 
-        public List<string> Execute() =>
+        public static List<string> Execute() =>
             Enumerable.Range(1, 100)
                 .Select(p => IsFizz(p)
                     ? IsBuzz(p)
@@ -23,7 +23,7 @@ namespace FizzBuzz.Core
                         : p.ToString())
                 .ToList();
 
-        public void Run() =>
+        public static void Run() =>
             Execute().ForEach(p => Console.Write($"{p} "));
     }
 }

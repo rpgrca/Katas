@@ -16,10 +16,10 @@ namespace PasswordVerifier.Core.UnitTests
         }
 
         [Fact]
-        public void GivenPasswordVerifier_WhenNullVerificatorIsGiven_ThenAnExceptionIsThrown()
+        public void GivenPasswordVerifier_WhenNullVerifierIsGiven_ThenAnExceptionIsThrown()
         {
             var exception = Assert.Throws<ArgumentException>(() => new PasswordVerifier(new List<Func<string, bool>> {}, null));
-            Assert.Equal(PasswordVerifier.VERIFICATOR_IS_NULL_EXCEPTION, exception.Message);
+            Assert.Equal(PasswordVerifier.VERIFIER_IS_NULL_EXCEPTION, exception.Message);
         }
 
         [Theory]

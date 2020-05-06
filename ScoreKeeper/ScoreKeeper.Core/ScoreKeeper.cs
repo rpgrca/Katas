@@ -7,7 +7,7 @@ namespace ScoreKeeper.Core
         public const string SCORE_IS_INVALID_EXCEPTION = "Score cannot be over 999 points.";
         private const int TEAM_A = 0;
         private const int TEAM_B = 1;
-        private readonly Score[] _scores = new Score[] { null, null };
+        private readonly Score[] _scores = { null, null };
 
         public ScoreKeeper(int startingScoreTeamA, int startingScoreTeamB)
         {
