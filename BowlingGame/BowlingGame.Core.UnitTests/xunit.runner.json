@@ -5,5 +5,4 @@
   "diagnosticMessages": true,
   "longRunningTestSeconds": 10,
   "methodDisplayOptions": "replaceUnderscoreWithSpace"
-  
 }

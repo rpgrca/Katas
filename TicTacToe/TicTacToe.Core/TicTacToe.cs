@@ -16,7 +16,7 @@ namespace TicTacToe.Core
         XWon = Player.X,
         OWon = Player.O,
     }
-    
+
     public class TicTacToe
     {
         private enum PlayerSquare
@@ -25,10 +25,10 @@ namespace TicTacToe.Core
             X = Player.X,
             O = Player.O
         }
-        
+
         public const string PLAYER_MOVEMENT_IS_INVALID_EXCEPTION = "The chosen coordinates are invalid.";
         public const string PLAYER_TURN_IS_INVALID_EXCEPTION = "Player turn is invalid.";
-        
+
         private Player _currentPlayer = Player.X;
         private readonly PlayerSquare[] _board = { PlayerSquare.N, PlayerSquare.N, PlayerSquare.N,
               PlayerSquare.N, PlayerSquare.N, PlayerSquare.N,
@@ -66,7 +66,7 @@ namespace TicTacToe.Core
             if (_currentPlayer != player)
             {
                 throw new ArgumentException(PLAYER_TURN_IS_INVALID_EXCEPTION);
-                
+
             }
 
             var movement = y * 3 + x;

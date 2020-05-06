@@ -142,7 +142,7 @@ namespace PasswordVerifier.Core
                  _passwordBuilder = passwordBuilder;
                  _value = value;
              }
-             
+
              public PasswordVerifierBuilder LowerCaseCharacters
              {
                  get
@@ -159,7 +159,7 @@ namespace PasswordVerifier.Core
  
                      return _passwordBuilder;
                  }
-             }            
+             }
         }
 
         public class PasswordVerifierBuilderRequirements
@@ -188,7 +188,7 @@ namespace PasswordVerifier.Core
             public PasswordVerifierBuilderAlwaysContract Always(int value) =>
                 new PasswordVerifierBuilderAlwaysContract(_passwordBuilder, value);
         }
-        
+
         public const string MINIMUM_LENGTH_IS_INVALID_EXCEPTION = "Minimum length is invalid.";
         public const string UPPERCASE_CHARACTER_AMOUNT_IS_INVALID = "Minimum amount of uppercase characters is invalid.";
         public const string LOWERCASE_CHARACTER_AMOUNT_IS_INVALID = "Minimum amount of lowercase characters is invalid.";
@@ -205,9 +205,8 @@ namespace PasswordVerifier.Core
 
         public PasswordVerifierBuilderRequirements Require =>
             new PasswordVerifierBuilderRequirements(this);
-        
+
         public PasswordVerifier Build() =>
             new PasswordVerifier(_rules, _verificator);
     }
-
 }

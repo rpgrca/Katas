@@ -226,7 +226,7 @@ namespace BowlingGame.Core.UnitTests
             var exception = Assert.Throws<ArgumentException>(() => game.Roll(1));
             Assert.Equal(Game.INVALID_AMOUNT_OF_FRAMES_EXCEPTION, exception.Message);
         }
-        
+
         [Fact]
         public void WhenScoringStrikeAtTenthFrame_TwoExtraRollsShouldBeAllowed()
         {
@@ -262,7 +262,7 @@ namespace BowlingGame.Core.UnitTests
             game.Roll(4);
             Assert.Equal(5, game.Score());
         }
-        
+
         [Fact]
         public void WhenPlayingAGameWithSpareAtTenthFrame_ScoreShouldCorrectlyBeCalculated()
         {

@@ -45,7 +45,7 @@ namespace BowlingGame.Core
         {
             const int maximumAmountOfPinsPerRoll = 10;
             const int minimumAmountOfPinsPerRoll = 0;
-            
+
             if (pins > maximumAmountOfPinsPerRoll || pins < minimumAmountOfPinsPerRoll)
             {
                 throw new ArgumentOutOfRangeException(nameof(pins), INVALID_AMOUNT_OF_PINES_EXCEPTION);

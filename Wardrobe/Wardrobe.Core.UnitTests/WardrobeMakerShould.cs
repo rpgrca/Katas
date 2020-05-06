@@ -196,7 +196,7 @@ namespace Wardrobe.Core.UnitTests
             var wardrobeMaker = new WardrobeMaker(new List<int> {1, 2});
             var wardrobes = new List<List<int>> {new List<int> {1,1}, new List<int> {2}};
             var priceList = new Dictionary<int, int> {{2, 6}, {1, 3}};
-  
+
             var bestQuotes = wardrobeMaker.GetBestQuotes(wardrobes, priceList);
             Assert.Collection(bestQuotes,
                 e1 => { Assert.Same(wardrobes[0], e1 );},

@@ -40,7 +40,7 @@ namespace TicTacToe.Core.UnitTests
             var exception = Assert.Throws<ArgumentException>(() => ticTacToe.Play(Player.X, 0, invalidY));
             Assert.Equal(TicTacToe.PLAYER_MOVEMENT_IS_INVALID_EXCEPTION, exception.Message);
         }
-        
+
         [Theory]
         [InlineData(-1)]
         [InlineData(3)]

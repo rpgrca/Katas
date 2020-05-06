@@ -21,7 +21,7 @@ namespace PasswordVerifier.Core.UnitTests
             var exception = Assert.Throws<ArgumentException>(() => new PasswordVerifier(new List<Func<string, bool>> {}, null));
             Assert.Equal(PasswordVerifier.VERIFICATOR_IS_NULL_EXCEPTION, exception.Message);
         }
-        
+
         [Theory]
         [InlineData("anyPassword")]
         [InlineData("")]
@@ -108,7 +108,7 @@ namespace PasswordVerifier.Core.UnitTests
             var result = passwordVerifier.Verify("validPassword");
             Assert.True(result);
         }
-        
+
         [Theory]
         [InlineData("INVALID PASSWORD")]
         [InlineData("")]
@@ -118,7 +118,7 @@ namespace PasswordVerifier.Core.UnitTests
             var passwordVerifier = new PasswordVerifierBuilder()
                 .Require.AtLeast(1).LowerCaseCharacters
                 .Build();
-        
+
             var exception = Assert.Throws<ArgumentException>(() => passwordVerifier.Verify(invalidPassword));
             Assert.Equal(PasswordVerifier.AMOUNT_OF_LOWERCASE_IS_INVALID_EXCEPTION, exception.Message);
         }
@@ -232,7 +232,7 @@ namespace PasswordVerifier.Core.UnitTests
                 .Require.NonNull                        // True
                 .Require.AtLeast(2).PassingRules
                 .Build();
-        
+
             var result = passwordVerifier.Verify("UUAABB");
             Assert.True(result);
         }
@@ -252,7 +252,7 @@ namespace PasswordVerifier.Core.UnitTests
             var exception = Assert.Throws<ArgumentException>(() => passwordVerifier.Verify("UUAAbbb"));
             Assert.Equal(PasswordVerifier.DID_NOT_FULFILL_MINIMUM_REQUIREMENT_EXCEPTION, exception.Message);
         }
-        
+
         [Fact]
         public void GivenPasswordVerifierWith3OutOf5_WhenGivingATwoFailing_ThenVerificationPasses()
         {
@@ -268,7 +268,7 @@ namespace PasswordVerifier.Core.UnitTests
             var result = passwordVerifier.Verify("UUAAbbb");
             Assert.True(result);
         }
-        
+
         [Fact]
         public void GivenPasswordVerifierWith5OutOf5_WhenGivingZeroFailing_ThenVerificationPasses()
         {

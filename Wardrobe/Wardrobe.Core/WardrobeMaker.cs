@@ -77,22 +77,22 @@ namespace Wardrobe.Core
             {
                 var currentCombinationSum = currentCombination.Sum();
                 if (currentCombinationSum == 0 || (currentCombinationSum > wallSize)) return;
-       
+
                 var leftOver = wallSize - currentCombinationSum;
                 if (leftOver < minimumSpaceLeft)
                 {
                     validCombinations.Clear();
                     minimumSpaceLeft = leftOver;
                 }
-       
+
                 if (leftOver == minimumSpaceLeft)
                 {
                     validCombinations.Add(currentCombination.ToList());
                 }
-       
+
                 return;
             }
-       
+
             foreach (var wardrobeSize in wardrobeSizes)
             {
                 currentCombination[currentIndex] = wardrobeSize;
@@ -104,7 +104,7 @@ namespace Wardrobe.Core
         private IList<int> GetSizesThatFitInWall(int wallSize) =>
             _sizes
                 .Where(p => p <= wallSize)
-                .ToList(); 
+                .ToList();
 
         private static void AddZeroPlaceholder(IList<int> sizesThatFitInWalls) =>
             sizesThatFitInWalls.Insert(0, 0);
