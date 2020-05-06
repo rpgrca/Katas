@@ -96,5 +96,21 @@ namespace ScoreKeeper.Core.UnitTests
              scoreKeeper.ScoreTeamB3();
              Assert.Equal("004:007", scoreKeeper.GetScore());
          }
+
+         [Fact]
+         public void GivenAScoreKeeperWithTeamAAt999Points_WhenAddingExtraPoint_ThenAnExceptionIsThrown()
+         {
+             var scoreKeeper = new ScoreKeeper(999, 0);
+             var exception = Assert.Throws<ArgumentException>(() => scoreKeeper.ScoreTeamA1());
+             Assert.Equal(ScoreKeeper.SCORE_IS_INVALID_EXCEPTION, exception.Message);
+         }
+
+         [Fact]
+         public void GivenAScoreKeeperWithTeamBAt999Points_WhenAddingExtraPoint_ThenAnExceptionIsThrown()
+         {
+             var scoreKeeper = new ScoreKeeper(0, 999);
+             var exception = Assert.Throws<ArgumentException>(() => scoreKeeper.ScoreTeamB1());
+             Assert.Equal(ScoreKeeper.SCORE_IS_INVALID_EXCEPTION, exception.Message);
+         }
     }
 }
