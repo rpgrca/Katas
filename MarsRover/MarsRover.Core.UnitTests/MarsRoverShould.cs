@@ -25,12 +25,13 @@ namespace MarsRover.Core.UnitTests
         }
 
         [Fact]
-        public void Test3(){
-            var marsRover = new MarsRover(1,1,"N");
- 
+        public void Test3()
+        {
+            var marsRover = new MarsRover(1, 1, "N");
+
             marsRover.Process("ff");
- 
-            Assert.True(marsRover.IsAtHeadingTo(1,3,"N"));
+
+            Assert.True(marsRover.IsAtHeadingTo(1, 3, "N"));
         }
 
         [Fact]
@@ -101,6 +102,34 @@ namespace MarsRover.Core.UnitTests
             marsRover.Process("br");
 
             Assert.True(marsRover.IsAtHeadingTo(0, 1, "S"));
+        }
+
+        [Fact]
+        public void Test10()
+        {
+            var marsRover = new MarsRover(1, 1, "E");
+
+            marsRover.Process("l");
+
+            Assert.True(marsRover.IsAtHeadingTo(1, 1, "N"));
+        }
+
+        [Fact]
+        public void Test11()
+        {
+            var marsRover = new MarsRover(1, 1, "E");
+
+            var exception = Assert.Throws<ArgumentException>(() => marsRover.Process("x"));
+            Assert.Equal(MarsRover.INVALID_COMMAND, exception.Message);
+        }
+
+        [Fact]
+        public void Test111()
+        {
+            var marsRover = new MarsRover(1, 1, "E");
+
+            Assert.Throws<ArgumentException>(() => marsRover.Process("x"));
+            Assert.True(marsRover.IsAtHeadingTo(1, 1, "E"));
         }
     }
 }

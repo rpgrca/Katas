@@ -20,49 +20,52 @@ namespace MarsRover.Core
         {
             foreach (var command in commands.ToCharArray())
             {
-                if (command == 'f')
+                if (_headingTo == "N")
                 {
-                    if (_headingTo == "N")
+                    if (command == 'f')
                     {
                         _y++;
                     }
-                    else if (_headingTo == "E")
-                    {
-                        _x++;
-                    }
-                }
-                else if (command == 'b')
-                {
-                    if (_headingTo == "N")
+                    else if (command == 'b')
                     {
                         _y--;
                     }
-                    else if (_headingTo == "E")
-                    {
-                        _x--;
-                    }
-                }
-                else if (command == 'l')
-                {
-                    if (_headingTo == "N")
+                    else if (command == 'l')
                     {
                         _headingTo = "W";
                     }
-                }
-                else if (command == 'r')
-                {
-                    if (_headingTo == "N")
+                    else if (command == 'r')
                     {
                         _headingTo = "E";
                     }
-                    else if (_headingTo == "E")
+                    else
+                    {
+                        throw new ArgumentException(INVALID_COMMAND);
+                    }
+                }
+
+                else if (_headingTo == "E")
+                {
+                    if (command == 'f')
+                    {
+                        _x++;
+                    }
+                    else if (command == 'b')
+                    {
+                        _x--;
+                    }
+                    else if (command == 'l')
+                    {
+                            _headingTo = "N";
+                    }
+                    else if (command == 'r')
                     {
                         _headingTo = "S";
                     }
-                }
-                else
-                {
-                    throw new ArgumentException(INVALID_COMMAND);
+                    else
+                    {
+                        throw new ArgumentException(INVALID_COMMAND);
+                    }
                 }
             }
         }
