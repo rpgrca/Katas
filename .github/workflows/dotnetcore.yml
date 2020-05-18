@@ -52,6 +52,5 @@ jobs:
     - name: Testing MarsRover.Core Library
       run: coverlet MarsRover/MarsRover.Core.UnitTests/bin/Debug/netcoreapp3.0/MarsRover.Core.UnitTests.dll --target "dotnet" --targetargs "test MarsRover/MarsRover.Core.UnitTests/MarsRover.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output marsrover.coverage.xml
 
-
     - name: Upload
       run: bash <(curl -s https://codecov.io/bash)
