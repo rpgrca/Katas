@@ -80,20 +80,34 @@ namespace Go.Core.UnitTests
             Assert.Equal(PositionStatus.Empty, status);
         }
 
-         [Fact]
-         public void GivenAStoneWithThreeOppositePiecesAroundx2y3_WhenAddingAFourthStoneLeft_ThenItsRemoved()
-         {
-             var board = CreateBoard();
- 
-                                                     board.AddStone(StoneColor.White, 2, 2);
-                                                     board.AddStone(StoneColor.Black, 2, 3); board.AddStone(StoneColor.White, 3, 3);
-                                                     board.AddStone(StoneColor.White, 2, 4);
+        [Fact]
+        public void GivenAStoneWithThreeOppositePiecesAroundx2y3_WhenAddingAFourthStoneLeft_ThenItsRemoved()
+        {
+            var board = CreateBoard();
 
-             board.AddStone(StoneColor.White, 1, 3); 
+                                                    board.AddStone(StoneColor.White, 2, 2);
+                                                    board.AddStone(StoneColor.Black, 2, 3); board.AddStone(StoneColor.White, 3, 3);
+                                                    board.AddStone(StoneColor.White, 2, 4);
 
-             var status = board.GetPositionStatus(2, 3);
-             Assert.Equal(PositionStatus.Empty, status);
-         }
+            board.AddStone(StoneColor.White, 1, 3); 
+
+            var status = board.GetPositionStatus(2, 3);
+            Assert.Equal(PositionStatus.Empty, status);
+        }
+         
+        [Fact]
+        public void GivenAStoneWithThreeOppositePiecesAroundx2y3_WhenAddingAFourthStoneRight_ThenItsRemoved()
+        {
+            var board = CreateBoard();
+             
+                                                    board.AddStone(StoneColor.White, 2, 2);
+            board.AddStone(StoneColor.White, 1, 3); board.AddStone(StoneColor.Black, 2, 3);
+                                                    board.AddStone(StoneColor.White, 2, 4);
+
+            board.AddStone(StoneColor.White, 3, 3);
+            var status = board.GetPositionStatus(2, 3);
+            Assert.Equal(PositionStatus.Empty, status);
+        }        
     }
 
     public enum StoneColor
@@ -121,6 +135,7 @@ namespace Go.Core.UnitTests
             RemoveSurroundedStone(x, y - 1);
             RemoveSurroundedStone(x, y + 1);
             RemoveSurroundedStone(x + 1, y);
+            RemoveSurroundedStone(x - 1, y);
         }
 
         private void RemoveSurroundedStone(int x, int y)
