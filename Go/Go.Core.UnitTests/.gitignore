@@ -1,0 +1,6 @@
+bin
+obj
+StrykerOutput
+reports
+*.DotSettings.user
+.idea
