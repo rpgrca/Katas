@@ -8,25 +8,53 @@ namespace Go.Core.UnitTests
         [Fact]
         public void GivenANewGame_WhenAskingStatusOfAnyPosition_ThenItIsEmpty()
         {
-            Board board = new Board();
+            var board = CreateBoard();
 
-            PositionStatus result = board.GetPositionStatus(1, 1);
+            var result = board.GetPositionStatus(1, 1);
             
             Assert.Equal(PositionStatus.Empty, result);
         }
+
+        private static Board CreateBoard()
+        {
+            return new Board();
+        }
+
+        [Fact]
+        public void GivenAGameWithAStoneSetAtx1y1_WhenAskingForStatus_ThenItsFilled()
+        {
+            var board = CreateBoard();
+
+            board.AddStone(Stone.Black, 1, 1);
+            var result = board.GetPositionStatus(1, 1);
+            Assert.Equal(PositionStatus.Filled, result);
+        }
+    }
+
+    public enum Stone
+    {
+        Black
     }
 
     public class Board
     {
+        private PositionStatus _positionStatus = PositionStatus.Empty;
+
         public PositionStatus GetPositionStatus(int x, int y)
         {
-            return PositionStatus.Empty;
+            return _positionStatus;
+        }
+
+        public void AddStone(Stone stone, int x, int y)
+        {
+            _positionStatus = PositionStatus.Filled;
         }
     }
 
     public enum PositionStatus
     {
         BlackStone,
-        Empty
+        Empty,
+        Filled
     }
 }
