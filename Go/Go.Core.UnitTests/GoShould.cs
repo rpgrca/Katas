@@ -29,6 +29,18 @@ namespace Go.Core.UnitTests
             var result = board.GetPositionStatus(1, 1);
             Assert.Equal(PositionStatus.Filled, result);
         }
+
+        [Fact]
+        public void GivenAGameWithAStoneSetAtx1y1_WhenAskingForStatusAtx1y2_ThenItsEmpty()
+        {
+            var board = CreateBoard();
+            
+            board.AddStone(Stone.Black, 1, 1);
+            var status = board.GetPositionStatus(1, 2);
+            
+            Assert.Equal(PositionStatus.Empty, status);
+
+        }
     }
 
     public enum Stone
@@ -38,22 +50,22 @@ namespace Go.Core.UnitTests
 
     public class Board
     {
-        private PositionStatus _positionStatus = PositionStatus.Empty;
+        private const int BOARD_SIZE = 19;
+        private readonly PositionStatus[,] _positionStatusMatrix = new PositionStatus[BOARD_SIZE, BOARD_SIZE];
 
         public PositionStatus GetPositionStatus(int x, int y)
         {
-            return _positionStatus;
+            return _positionStatusMatrix[x - 1 , y - 1];
         }
 
         public void AddStone(Stone stone, int x, int y)
         {
-            _positionStatus = PositionStatus.Filled;
+            _positionStatusMatrix[x - 1, y - 1] = PositionStatus.Filled;
         }
     }
 
     public enum PositionStatus
     {
-        BlackStone,
         Empty,
         Filled
     }
