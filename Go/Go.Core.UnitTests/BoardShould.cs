@@ -1,9 +1,8 @@
-using System;
 using Xunit;
 
 namespace Go.Core.UnitTests
 {
-    public class UnitTest1
+    public class BoardShould
     {
         [Fact]
         public void GivenANewGame_WhenAskingStatusOfAnyPosition_ThenItIsEmpty()
@@ -107,59 +106,23 @@ namespace Go.Core.UnitTests
             board.AddStone(StoneColor.White, 3, 3);
             var status = board.GetPositionStatus(2, 3);
             Assert.Equal(PositionStatus.Empty, status);
-        }        
+        }
+
+        [Fact]
+        public void Test1()
+        {
+            var board = CreateBoard();
+            var result = Board.GetWinner();
+            Assert.Equal(StoneColor.White, result);
+        }
+        
+        
     }
 
     public enum StoneColor
     {
         Black,
         White
-    }
-
-    public class Board
-    {
-        private const int BOARD_SIZE = 19;
-        private readonly PositionStatus[,] _positionStatusMatrix = new PositionStatus[BOARD_SIZE, BOARD_SIZE];
-        private readonly StoneColor[,] _stoneColorMatrix = new StoneColor[BOARD_SIZE, BOARD_SIZE];
-
-        public PositionStatus GetPositionStatus(int x, int y)
-        {
-            return _positionStatusMatrix[x, y];
-        }
-
-        public void AddStone(StoneColor stoneColor, int x, int y)
-        {
-            _positionStatusMatrix[x, y] = PositionStatus.Filled;
-            _stoneColorMatrix[x, y] = stoneColor;
-
-            RemoveSurroundedStone(x, y - 1);
-            RemoveSurroundedStone(x, y + 1);
-            RemoveSurroundedStone(x + 1, y);
-            RemoveSurroundedStone(x - 1, y);
-        }
-
-        private void RemoveSurroundedStone(int x, int y)
-        {
-            try
-            {
-                var surroundedOnLeft = x == 0 || _stoneColorMatrix[x - 1, y] == StoneColor.White;
-                var surroundedOnBottom = _stoneColorMatrix[x, y + 1] == StoneColor.White;
-                var surroundedOnRight = _stoneColorMatrix[x + 1, y] == StoneColor.White;
-                var surroundedOnTop = y == 0 || _stoneColorMatrix[x, y - 1] == StoneColor.White;
-
-                if (surroundedOnLeft &&
-                    surroundedOnRight &&
-                    surroundedOnTop &&
-                    surroundedOnBottom)
-                {
-                    _positionStatusMatrix[x, y] = PositionStatus.Empty;
-                }
-            }
-            catch (IndexOutOfRangeException)
-            {
-                
-            }
-        }
     }
 
     public enum PositionStatus
