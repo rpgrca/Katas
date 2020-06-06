@@ -126,5 +126,27 @@ namespace CommandLineParser.Core.UnitTests
             var exception = Assert.Throws<ArgumentException>(() => commandLineParser.Parse("-l -r"));
             Assert.Equal(ParserSchema.ARGUMENT_IS_INVALID_EXCEPTION, exception.Message);
         }
+
+        [Fact]
+        public void GivenANewCommandLineParser_WhenRequestingInvalidIntegerFlag_ThenAnExceptionIsThrown()
+        {
+            var schema = new ParserSchemaBuilder()
+                .Build();
+
+            var commandLineParser = new CommandLineParser(schema);
+            var exception = Assert.Throws<ArgumentException>(() => commandLineParser.GetInteger("m"));
+            Assert.Equal(ParserSchema.FLAG_IS_UNKNOWN_EXCEPTION, exception.Message);
+        }
+
+        [Fact]
+        public void GivenANewCommandLineParser_WhenRequestingInvalidBooleanFlag_ThenAnExceptionIsThrown()
+        {
+            var schema = new ParserSchemaBuilder()
+                .Build();
+
+            var commandLineParser = new CommandLineParser(schema);
+            var exception = Assert.Throws<ArgumentException>(() => commandLineParser.GetBoolean("m"));
+            Assert.Equal(ParserSchema.FLAG_IS_UNKNOWN_EXCEPTION, exception.Message);
+        }
     }
 }

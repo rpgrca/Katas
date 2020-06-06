@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace CommandLineParser.Core
 {
@@ -47,15 +46,14 @@ namespace CommandLineParser.Core
         }
 
         public int GetInteger(string flag) =>
-            _schemaItems
-                .Where(p => flag == p.Flag)
-                .Select(p => int.Parse(p.Value))
-                .First();
+            int.Parse(GetValueFor(flag));
 
         public bool GetBoolean(string flag) =>
+            bool.Parse(GetValueFor(flag));
+
+        private string GetValueFor(string flag) =>
             _schemaItems
-                .Where(p => flag == p.Flag)
-                .Select(p => bool.Parse(p.Value))
-                .First();
+                .SingleOrDefault(p => flag == p.Flag)?
+                .Value ?? throw new ArgumentException(FLAG_IS_UNKNOWN_EXCEPTION);
     }
 }
