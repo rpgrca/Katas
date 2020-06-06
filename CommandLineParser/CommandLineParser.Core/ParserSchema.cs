@@ -1,16 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace CommandLineParser.Core
 {
     public class ParserSchema
     {
         public const string FLAG_IS_UNKNOWN_EXCEPTION = "The given flag is invalid.";
+        public const string VALUE_IS_MISSING_EXCEPTION = "The flag is missing an argument.";
+        public const string ARGUMENT_IS_INVALID_EXCEPTION = "The argument is invalid.";
 
         private readonly List<ParserSchemaItem> _schemaItems;
 
-        public ParserSchema(List<ParserSchemaItem> schemaItems) =>
+        internal ParserSchema(List<ParserSchemaItem> schemaItems) =>
             _schemaItems = schemaItems;
 
         public void Tokenize(string commandLine)
@@ -43,55 +46,16 @@ namespace CommandLineParser.Core
             return flag;
         }
 
-        public int GetInteger(string flag)
-        {
-            var item = _schemaItems
-                .SingleOrDefault(p => flag == p.Flag);
+        public int GetInteger(string flag) =>
+            _schemaItems
+                .Where(p => flag == p.Flag)
+                .Select(p => int.Parse(p.Value))
+                .First();
 
-            return int.Parse(item.Value);
-        }
-
-        public bool GetBoolean(string flag)
-        {
-            var item = _schemaItems
-                .SingleOrDefault(p => flag == p.Flag);
-
-            return bool.Parse(item.Value);
-        }
-    }
-
-    public class ParserSchemaItem
-    {
-        public string Flag { get; }
-        public string Value { get; internal set; }
-
-        protected ParserSchemaItem(string flag)
-        {
-            Flag = flag;
-        }
-
-        internal virtual void Extract(Queue<string> queue) =>
-            Value = queue.Dequeue();
-    }
-
-    public class ParserSchemaBooleanItem : ParserSchemaItem
-    {
-        public ParserSchemaBooleanItem(string flag) :
-            base(flag)
-        {
-            Value = false.ToString();
-        }
-
-        internal override void Extract(Queue<string> queue) =>
-            Value = true.ToString();
-    }
-
-    public class ParserSchemaIntegerItem : ParserSchemaItem
-    {
-        public ParserSchemaIntegerItem(string flag) :
-            base(flag)
-        {
-            Value = 0.ToString();
-        }
+        public bool GetBoolean(string flag) =>
+            _schemaItems
+                .Where(p => flag == p.Flag)
+                .Select(p => bool.Parse(p.Value))
+                .First();
     }
 }

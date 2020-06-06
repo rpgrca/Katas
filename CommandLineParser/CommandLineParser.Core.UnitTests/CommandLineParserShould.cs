@@ -63,10 +63,24 @@ namespace CommandLineParser.Core.UnitTests
             Assert.False(commandLineParser.GetBoolean("l"));
         }
 
+        [Fact]
+        public void GivenACommandLineParser_WhenBooleanFlagIsPresentAndNot_ThenTrueFalseAreReturned()
+        {
+            var schema = new ParserSchemaBuilder()
+                .AddBoolean("p")
+                .AddBoolean("l")
+                .Build();
+            var commandLineParser = new CommandLineParser(schema);
+            commandLineParser.Parse("-p");
+            Assert.True(commandLineParser.GetBoolean("p"));
+            Assert.False(commandLineParser.GetBoolean("l"));
+        }
+
         [Theory]
         [InlineData("-l 0", 0)]
         [InlineData("-l 8", 8)]
         [InlineData("-l 9", 9)]
+        [InlineData("-l -1", -1)]
         public void GivenACommandLineParser_WhenParsingAFlagWithNumericValue_ThenTheValueIsReturned(string commandLine, int expectedValue)
         {
             var schema = new ParserSchemaBuilder()
@@ -88,14 +102,29 @@ namespace CommandLineParser.Core.UnitTests
             Assert.Equal(0, commandLineParser.GetInteger("l"));
         }
 
-/*
         [Fact]
-        public void Test1()
+        public void GivenACommandLineParser_WhenSameFlagAppearsMultipleTimes_ThenLastOneIsReturned()
         {
-            var commandLineParser = new CommandLineParser(new ParserSchema("lp"));
-            commandLineParser.Parse("-p");
-            Assert.True(commandLineParser.GetBoolean("p"));
-            Assert.False(commandLineParser.GetBoolean("l"));
-        }*/
+            var schema = new ParserSchemaBuilder()
+                .AddInteger("l")
+                .Build();
+
+            var commandLineParser = new CommandLineParser(schema);
+            commandLineParser.Parse("-l 4 -l 3 -l 2");
+            Assert.Equal(2, commandLineParser.GetInteger("l"));
+        }
+
+        [Fact]
+        public void GivenACommandLineParser_WhenExpectingValueAndGetArgument_ThenAnExceptionIsThrown()
+        {
+            var schema = new ParserSchemaBuilder()
+                .AddInteger("l")
+                .AddBoolean("r")
+                .Build();
+
+            var commandLineParser = new CommandLineParser(schema);
+            var exception = Assert.Throws<ArgumentException>(() => commandLineParser.Parse("-l -r"));
+            Assert.Equal(ParserSchema.ARGUMENT_IS_INVALID_EXCEPTION, exception.Message);
+        }
     }
 }
