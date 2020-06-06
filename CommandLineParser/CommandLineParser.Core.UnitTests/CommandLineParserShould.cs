@@ -8,7 +8,7 @@ namespace CommandLineParser.Core.UnitTests
         [Fact]
         public void GivenACommandLineParser_WhenInitializingWithNullSchema_ThenAnExceptionIsThrown()
         {
-            var exception = Assert.Throws<ArgumentException>(() => new CommandLineParser(new ParserSchema(null)));
+            var exception = Assert.Throws<ArgumentException>(() => new CommandLineParser(null));
             Assert.Equal(CommandLineParser.SCHEMA_IS_NULL_EXCEPTION, exception.Message);
         }
 
@@ -28,7 +28,7 @@ namespace CommandLineParser.Core.UnitTests
                 .Build();
             var commandLineParser = new CommandLineParser(schema);
             var exception = Assert.Throws<ArgumentException>(() => commandLineParser.Parse("-l"));
-            Assert.Equal(CommandLineParser.FLAG_IS_UNKNOWN_EXCEPTION, exception.Message);
+            Assert.Equal(ParserSchema.FLAG_IS_UNKNOWN_EXCEPTION, exception.Message);
         }
 
         [Fact]
@@ -87,6 +87,7 @@ namespace CommandLineParser.Core.UnitTests
             commandLineParser.Parse(string.Empty);
             Assert.Equal(0, commandLineParser.GetInteger("l"));
         }
+
 /*
         [Fact]
         public void Test1()

@@ -24,6 +24,4 @@ namespace CommandLineParser.Core
         public ParserSchema Build() =>
             new ParserSchema(_items);
     }
-
-
 }

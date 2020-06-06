@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -5,22 +6,30 @@ namespace CommandLineParser.Core
 {
     public class ParserSchema
     {
-        private List<ParserSchemaItem> _schemaItems;
-        
+        public const string FLAG_IS_UNKNOWN_EXCEPTION = "The given flag is invalid.";
+
+        private readonly List<ParserSchemaItem> _schemaItems;
+
         public ParserSchema(List<ParserSchemaItem> schemaItems) =>
             _schemaItems = schemaItems;
 
         public void Tokenize(string commandLine)
         {
             var flags = commandLine.Split(' ');
-
-            foreach (var flag in flags)
+            var queue = new Queue<string>(flags);
+            while (queue.Count > 0)
             {
-                var flagWithoutDash = RemoveDash(flag);
+                var flagWithDash = queue.Dequeue();
+                var flagWithoutDash = RemoveDash(flagWithDash);
                 var item = _schemaItems
-                    .Single(p => flagWithoutDash == p.Flag);
-                    
-                //item.CloneWith()
+                    .SingleOrDefault(p => flagWithoutDash == p.Flag);
+
+                if (item == null)
+                {
+                    throw new ArgumentException(FLAG_IS_UNKNOWN_EXCEPTION);
+                }
+
+                item.Extract(queue);
             }
         }
 
@@ -33,14 +42,36 @@ namespace CommandLineParser.Core
 
             return flag;
         }
+
+        public int GetInteger(string flag)
+        {
+            var item = _schemaItems
+                .SingleOrDefault(p => flag == p.Flag);
+
+            return int.Parse(item.Value);
+        }
+
+        public bool GetBoolean(string flag)
+        {
+            var item = _schemaItems
+                .SingleOrDefault(p => flag == p.Flag);
+
+            return bool.Parse(item.Value);
+        }
     }
 
     public class ParserSchemaItem
     {
         public string Flag { get; }
+        public string Value { get; internal set; }
 
-        protected ParserSchemaItem(string flag) =>
+        protected ParserSchemaItem(string flag)
+        {
             Flag = flag;
+        }
+
+        internal virtual void Extract(Queue<string> queue) =>
+            Value = queue.Dequeue();
     }
 
     public class ParserSchemaBooleanItem : ParserSchemaItem
@@ -48,7 +79,11 @@ namespace CommandLineParser.Core
         public ParserSchemaBooleanItem(string flag) :
             base(flag)
         {
+            Value = false.ToString();
         }
+
+        internal override void Extract(Queue<string> queue) =>
+            Value = true.ToString();
     }
 
     public class ParserSchemaIntegerItem : ParserSchemaItem
@@ -56,6 +91,7 @@ namespace CommandLineParser.Core
         public ParserSchemaIntegerItem(string flag) :
             base(flag)
         {
+            Value = 0.ToString();
         }
-    }   
+    }
 }

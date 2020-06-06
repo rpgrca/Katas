@@ -5,10 +5,9 @@ namespace CommandLineParser.Core
 {
     public class CommandLineParser
     {
-        public const string FLAG_IS_UNKNOWN_EXCEPTION = "The given flag is invalid.";
         public const string SCHEMA_IS_NULL_EXCEPTION = "Schema is null.";
         public const string ARGUMENTS_ARE_NULL_EXCEPTION = "Argument line is null.";
-        
+
         private readonly ParserSchema _parserSchema;
         private string _commandLine;
 
@@ -24,25 +23,12 @@ namespace CommandLineParser.Core
             }
 
             _parserSchema.Tokenize(_commandLine);
-            // if (! _commandLine.StartsWith($"-{_parserSchema}"))
-            // {
-            //     throw new ArgumentException(FLAG_IS_UNKNOWN_EXCEPTION);
-            // }
         }
 
-        public bool GetBoolean(string flag)
-        {
-            return ($"-{_parserSchema}" == _commandLine);
-        }
+         public bool GetBoolean(string flag) =>
+            _parserSchema.GetBoolean(flag);
 
-        public int GetInteger(string flag)
-        {
-            if (_commandLine.StartsWith($"-{_parserSchema}"))
-            {
-                return int.Parse(_commandLine.Substring(_parserSchema.ToString().Length + 1));
-            }
-            
-            return 0;
-        }
+        public int GetInteger(string flag) =>
+            _parserSchema.GetInteger(flag);
     }
 }
