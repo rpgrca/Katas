@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Globalization;
+using System;
 
 namespace FizzBuzz.OO
 {
@@ -7,6 +8,12 @@ namespace FizzBuzz.OO
         public abstract string ToString();
     }
 
+    public class Number : Element
+    {
+        public override string ToString()
+        {
+        }
+    }
 
     public class FizzBuzz
     {
