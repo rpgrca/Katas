@@ -36,6 +36,19 @@ namespace FizzBuzz.OO
 
         public static Number From(int value)
         {
+            if (value % 15 == 0)
+            {
+                return new MultipleOfThreeAndFive(value);
+            }
+            else if (value % 3 == 0)
+            {
+                return new MultipleOfThree(value);
+            }
+            else if (value % 5 == 0)
+            {
+                return new MultipleOfFive(value);
+            }
+
             return new Number(value);
         }
 
@@ -43,28 +56,6 @@ namespace FizzBuzz.OO
 
         protected Number(int value) => _value = value;
 
-        public override string ToString()
-        {
-            var result = string.Empty;
-
-            if (_value % 15 == 0)
-            {
-                result += "FizzBuzz";
-            }
-            else if (_value % 3 == 0)
-            {
-                result += "Fizz";
-            }
-            else if (_value % 5 == 0)
-            {
-                result += "Buzz";
-            }
-            else 
-            {
-                result += _value.ToString();
-            }
-
-            return result;
-        }
+        public override string ToString() => _value.ToString();
     }
 }
