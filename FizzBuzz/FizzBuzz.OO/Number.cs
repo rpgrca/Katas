@@ -5,35 +5,35 @@ using System;
 
 namespace FizzBuzz.OO
 {
-    public class MultipleOfThree : Number
-    {
-        public MultipleOfThree(int value) : base(value)
-        {
-        }
-
-        public override string ToString() => "Fizz";
-    }
-
-    public class MultipleOfFive : Number
-    {
-        public MultipleOfFive(int value) : base(value)
-        {
-        }
-
-        public override string ToString() => "Buzz";
-    }
-
-    public class MultipleOfThreeAndFive : Number
-    {
-        public MultipleOfThreeAndFive(int value) : base(value)
-        {
-        }
-
-        public override string ToString() => "FizzBuzz";
-    }
-
     public class Number : Element
     {
+        private class MultipleOfThree : Number
+        {
+            public MultipleOfThree(int value) : base(value)
+            {
+            }
+
+            public override string ToString() => "Fizz";
+        }
+
+        private class MultipleOfFive : Number
+        {
+            public MultipleOfFive(int value) : base(value)
+            {
+            }
+
+            public override string ToString() => "Buzz";
+        }
+
+        private class MultipleOfThreeAndFive : Number
+        {
+            public MultipleOfThreeAndFive(int value) : base(value)
+            {
+            }
+
+            public override string ToString() => "FizzBuzz";
+        }
+
         public static Number From(int value)
         {
             return new Number(value);
