@@ -2,6 +2,12 @@
 
 namespace FizzBuzz.OO
 {
+    public abstract class Element
+    {
+        public abstract string ToString();
+    }
+
+
     public class FizzBuzz
     {
         private readonly int _limit;
