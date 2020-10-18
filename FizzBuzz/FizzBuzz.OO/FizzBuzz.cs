@@ -16,7 +16,29 @@ namespace FizzBuzz.OO
 
         public Number(int value) => _value = value;
 
-        public string ToString() => _value.ToString();
+        public string ToString()
+        {
+            var result = string.Empty;
+
+            if (_value % 15 == 0)
+            {
+                result += "FizzBuzz ";
+            }
+            else if (_value % 3 == 0)
+            {
+                result += "Fizz ";
+            }
+            else if (_value % 5 == 0)
+            {
+                result += "Buzz ";
+            }
+            else 
+            {
+                result += _value.ToString() + " ";
+            }
+
+            return result;
+        }
     }
 
     public class FizzBuzz
@@ -40,25 +62,9 @@ namespace FizzBuzz.OO
             {
                 var result = string.Empty;
 
-                for (var i = 1; i <= _limit; i++)
-                {
-                    if (i % 15 == 0)
-                    {
-                        result += "FizzBuzz ";
-                    }
-                    else if (i % 3 == 0)
-                    {
-                        result += "Fizz ";
-                    }
-                    else if (i % 5 == 0)
-                    {
-                        result += "Buzz ";
-                    }
-                    else 
-                    {
-                        result += i.ToString() + " ";
-                    }
-
+                foreach (var number in _numbers)
+                {                        
+                    result += number.ToString();
                 }
 
                 return result.Trim();
