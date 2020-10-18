@@ -34,9 +34,14 @@ namespace FizzBuzz.OO
 
     public class Number : Element
     {
+        public static Number From(int value)
+        {
+            return new Number(value);
+        }
+
         protected readonly int _value;
 
-        public Number(int value) => _value = value;
+        protected Number(int value) => _value = value;
 
         public override string ToString()
         {

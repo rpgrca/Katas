@@ -16,7 +16,7 @@ namespace FizzBuzz.OO
             _numbers = new List<Element>();
             foreach (var value in Enumerable.Range(1, limit))
             {
-                _numbers.Add(new Number(value));
+                _numbers.Add(Number.From(value));
             }
         }
 
