@@ -56,12 +56,6 @@ namespace FizzBuzz.OO
             }
         }
 
-        public string Value
-        {
-            get
-            {
-                return string.Join(" ", _numbers);
-            }
-        }
+        public string Value => string.Join(" ", _numbers);
     }
 }
