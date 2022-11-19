@@ -42,7 +42,7 @@ jobs:
     - name: Testing NET programs
       run: |
            for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe; do
-               coverlet $s/$s.UnitTests/bin/Debug/net7/$s.UnitTests.dll --target "dotnet" --targetargs "test $s/$s.UnitTests/$s.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output $s.coverage.xml
+               coverlet $s/$s.Core.UnitTests/bin/Debug/net7/$s.Core.UnitTests.dll --target "dotnet" --targetargs "test $s/$s.Core.UnitTests/$s.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output $s.coverage.xml
            done
 
     - name: Upload coverage to CodeCov
