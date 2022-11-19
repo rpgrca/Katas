@@ -14,10 +14,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup .NET Core
+    - name: Setup .NET Environment
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.0.100
+        dotnet-version: 7.0.x
 
     - name: Install dependencies
       run: dotnet restore
@@ -25,32 +25,31 @@ jobs:
     - name: Install tools
       run: dotnet tool install --global coverlet.console
 
-    - name: Build Release
-      run: dotnet build --configuration Release --no-restore
+    - name: Restore packages
+      run: |
+           dotnet restore
+           for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe; do
+               dotnet restore $s/$s.sln
+           done
 
-    - name: Build Debug
-      run: dotnet build --configuration Debug --no-restore
+    - name: Build solutions
+      run: |
+           dotnet build --configuration Debug --no-restore
+           for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe; do
+               dotnet build --configuration Debug --no-restore $s/$s.sln
+           done
 
-    - name: Testing FizzBuzz.Core Library
-      run: coverlet FizzBuzz/FizzBuzz.Core.UnitTests/bin/Debug/netcoreapp3.0/FizzBuzz.Core.UnitTests.dll --target "dotnet" --targetargs "test FizzBuzz/FizzBuzz.Core.UnitTests/FizzBuzz.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output fizzbuzz.core.coverage.xml
+    - name: Testing NET programs
+      run: |
+           for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe; do
+               coverlet $s/$s.UnitTests/bin/Debug/net7/$s.UnitTests.dll --target "dotnet" --targetargs "test $s/$s.UnitTests/$s.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output $s.coverage.xml
+           done
 
-    - name: Testing BowlingGame.Core Library
-      run: coverlet BowlingGame/BowlingGame.Core.UnitTests/bin/Debug/netcoreapp3.0/BowlingGame.Core.UnitTests.dll --target "dotnet" --targetargs "test BowlingGame/BowlingGame.Core.UnitTests/BowlingGame.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output bowlinggame.coverage.xml
-
-    - name: Testing Wardrobe.Core Library
-      run: coverlet Wardrobe/Wardrobe.Core.UnitTests/bin/Debug/netcoreapp3.0/Wardrobe.Core.UnitTests.dll --target "dotnet" --targetargs "test Wardrobe/Wardrobe.Core.UnitTests/Wardrobe.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output wardrobe.coverage.xml
-
-    - name: Testing TicTacToe.Core Library
-      run: coverlet TicTacToe/TicTacToe.Core.UnitTests/bin/Debug/netcoreapp3.0/TicTacToe.Core.UnitTests.dll --target "dotnet" --targetargs "test TicTacToe/TicTacToe.Core.UnitTests/TicTacToe.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output tictactoe.coverage.xml
-
-    - name: Testing PasswordVerifier.Core Library
-      run: coverlet PasswordVerifier/PasswordVerifier.Core.UnitTests/bin/Debug/netcoreapp3.0/PasswordVerifier.Core.UnitTests.dll --target "dotnet" --targetargs "test PasswordVerifier/PasswordVerifier.Core.UnitTests/PasswordVerifier.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output passwordverifier.coverage.xml
-
-    - name: Testing ScoreKeeper.Core Library
-      run: coverlet ScoreKeeper/ScoreKeeper.Core.UnitTests/bin/Debug/netcoreapp3.0/ScoreKeeper.Core.UnitTests.dll --target "dotnet" --targetargs "test ScoreKeeper/ScoreKeeper.Core.UnitTests/ScoreKeeper.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output scorekeeper.coverage.xml
-
-    - name: Testing MarsRover.Core Library
-      run: coverlet MarsRover/MarsRover.Core.UnitTests/bin/Debug/netcoreapp3.0/MarsRover.Core.UnitTests.dll --target "dotnet" --targetargs "test MarsRover/MarsRover.Core.UnitTests/MarsRover.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output marsrover.coverage.xml
-
-    - name: Upload
+    - name: Upload coverage to CodeCov
       run: bash <(curl -s https://codecov.io/bash)
+
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage-report
+        path: ./*.coverage.xml
