@@ -5,8 +5,7 @@ namespace CommandLineParser.Core
 {
     internal class ParserSchemaIntegerItem : ParserSchemaItem
     {
-        public ParserSchemaIntegerItem(string flag) :
-            base(flag) =>
+        public ParserSchemaIntegerItem(string flag) : base(flag) =>
             Value = 0.ToString();
 
         public override void Extract(Queue<string> queue)

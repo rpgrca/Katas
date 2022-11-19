@@ -8,16 +8,16 @@ namespace CommandLineParser.Core.UnitTests
         [Fact]
         public void GivenACommandLineParser_WhenInitializingWithNullSchema_ThenAnExceptionIsThrown()
         {
-            var exception = Assert.Throws<ArgumentException>(() => new CommandLineParser(null));
+            var exception = Assert.Throws<ArgumentException>(() => new CommandLineParser(null, null));
             Assert.Equal(CommandLineParser.SCHEMA_IS_NULL_EXCEPTION, exception.Message);
         }
 
         [Fact]
-        public void GivenACommandLineParser_WhenInitializingWithSchema_ThenItsBuilt()
+        public void GivenACommandLineParser_WhenInitializingWithSchemaAndCommandLine_ThenItsBuilt()
         {
             var schema = new ParserSchemaBuilder()
                 .Build();
-            var commandLineParser = new CommandLineParser(schema);
+            var commandLineParser = new CommandLineParser(schema, string.Empty);
             Assert.NotNull(commandLineParser);
         }
 
@@ -26,8 +26,8 @@ namespace CommandLineParser.Core.UnitTests
         {
             var schema = new ParserSchemaBuilder()
                 .Build();
-            var commandLineParser = new CommandLineParser(schema);
-            var exception = Assert.Throws<ArgumentException>(() => commandLineParser.Parse("-l"));
+            var commandLineParser = new CommandLineParser(schema, "-l");
+            var exception = Assert.Throws<ArgumentException>(() => commandLineParser.Parse());
             Assert.Equal(ParserSchema.FLAG_IS_UNKNOWN_EXCEPTION, exception.Message);
         }
 
@@ -36,8 +36,7 @@ namespace CommandLineParser.Core.UnitTests
         {
             var schema = new ParserSchemaBuilder()
                 .Build();
-            var commandLineParser = new CommandLineParser(schema);
-            var exception = Assert.Throws<ArgumentException>(() => commandLineParser.Parse(null));
+            var exception = Assert.Throws<ArgumentException>(() => new CommandLineParser(schema, null));
             Assert.Equal(CommandLineParser.ARGUMENTS_ARE_NULL_EXCEPTION,  exception.Message);
         }
 
@@ -47,8 +46,8 @@ namespace CommandLineParser.Core.UnitTests
             var schema = new ParserSchemaBuilder()
                 .AddBoolean("l")
                 .Build();
-            var commandLineParser = new CommandLineParser(schema);
-            commandLineParser.Parse("-l");
+            var commandLineParser = new CommandLineParser(schema, "-l");
+            commandLineParser.Parse();
             Assert.True(commandLineParser.GetBoolean("l"));
         }
 
@@ -58,8 +57,7 @@ namespace CommandLineParser.Core.UnitTests
             var schema = new ParserSchemaBuilder()
                 .AddBoolean("l")
                 .Build();
-            var commandLineParser = new CommandLineParser(schema);
-            commandLineParser.Parse(string.Empty);
+            var commandLineParser = new CommandLineParser(schema, string.Empty);
             Assert.False(commandLineParser.GetBoolean("l"));
         }
 
@@ -70,8 +68,8 @@ namespace CommandLineParser.Core.UnitTests
                 .AddBoolean("p")
                 .AddBoolean("l")
                 .Build();
-            var commandLineParser = new CommandLineParser(schema);
-            commandLineParser.Parse("-p");
+            var commandLineParser = new CommandLineParser(schema, "-p");
+            commandLineParser.Parse();
             Assert.True(commandLineParser.GetBoolean("p"));
             Assert.False(commandLineParser.GetBoolean("l"));
         }
@@ -86,8 +84,8 @@ namespace CommandLineParser.Core.UnitTests
             var schema = new ParserSchemaBuilder()
                 .AddInteger("l")
                 .Build();
-            var commandLineParser = new CommandLineParser(schema);
-            commandLineParser.Parse(commandLine);
+            var commandLineParser = new CommandLineParser(schema, commandLine);
+            commandLineParser.Parse();
             Assert.Equal(expectedValue, commandLineParser.GetInteger("l"));
         }
 
@@ -97,8 +95,8 @@ namespace CommandLineParser.Core.UnitTests
             var schema = new ParserSchemaBuilder()
                 .AddInteger("l")
                 .Build();
-            var commandLineParser = new CommandLineParser(schema);
-            commandLineParser.Parse(string.Empty);
+            var commandLineParser = new CommandLineParser(schema, string.Empty);
+            commandLineParser.Parse();
             Assert.Equal(0, commandLineParser.GetInteger("l"));
         }
 
@@ -109,8 +107,8 @@ namespace CommandLineParser.Core.UnitTests
                 .AddInteger("l")
                 .Build();
 
-            var commandLineParser = new CommandLineParser(schema);
-            commandLineParser.Parse("-l 4 -l 3 -l 2");
+            var commandLineParser = new CommandLineParser(schema, "-l 4 -l 3 -l 2");
+            commandLineParser.Parse();
             Assert.Equal(2, commandLineParser.GetInteger("l"));
         }
 
@@ -122,8 +120,8 @@ namespace CommandLineParser.Core.UnitTests
                 .AddBoolean("r")
                 .Build();
 
-            var commandLineParser = new CommandLineParser(schema);
-            var exception = Assert.Throws<ArgumentException>(() => commandLineParser.Parse("-l -r"));
+            var commandLineParser = new CommandLineParser(schema, "-l -r");
+            var exception = Assert.Throws<ArgumentException>(() => commandLineParser.Parse());
             Assert.Equal(ParserSchema.ARGUMENT_IS_INVALID_EXCEPTION, exception.Message);
         }
 
@@ -133,7 +131,7 @@ namespace CommandLineParser.Core.UnitTests
             var schema = new ParserSchemaBuilder()
                 .Build();
 
-            var commandLineParser = new CommandLineParser(schema);
+            var commandLineParser = new CommandLineParser(schema, string.Empty);
             var exception = Assert.Throws<ArgumentException>(() => commandLineParser.GetInteger("m"));
             Assert.Equal(ParserSchema.FLAG_IS_UNKNOWN_EXCEPTION, exception.Message);
         }
@@ -144,7 +142,7 @@ namespace CommandLineParser.Core.UnitTests
             var schema = new ParserSchemaBuilder()
                 .Build();
 
-            var commandLineParser = new CommandLineParser(schema);
+            var commandLineParser = new CommandLineParser(schema, string.Empty);
             var exception = Assert.Throws<ArgumentException>(() => commandLineParser.GetBoolean("m"));
             Assert.Equal(ParserSchema.FLAG_IS_UNKNOWN_EXCEPTION, exception.Message);
         }

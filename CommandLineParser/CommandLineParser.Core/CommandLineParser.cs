@@ -8,20 +8,20 @@ namespace CommandLineParser.Core
         public const string ARGUMENTS_ARE_NULL_EXCEPTION = "Argument line is null.";
 
         private readonly ParserSchema _parserSchema;
-        private string _commandLine;
+        private readonly string _commandLine;
 
-        public CommandLineParser(ParserSchema parserSchema) =>
-            _parserSchema = parserSchema ?? throw new ArgumentException(SCHEMA_IS_NULL_EXCEPTION);
-
-        public void Parse(string commandLine)
+        public CommandLineParser(ParserSchema parserSchema, string commandLine)
         {
+            _parserSchema = parserSchema ?? throw new ArgumentException(SCHEMA_IS_NULL_EXCEPTION);
             _commandLine = commandLine ?? throw new ArgumentException(ARGUMENTS_ARE_NULL_EXCEPTION);
-            if (string.IsNullOrEmpty(_commandLine))
-            {
-                return;
-            }
+        }
 
-            _parserSchema.Tokenize(_commandLine);
+        public void Parse()
+        {
+            if (! string.IsNullOrEmpty(_commandLine))
+            {
+                _parserSchema.Tokenize(_commandLine);
+            }
         }
 
          public bool GetBoolean(string flag) =>

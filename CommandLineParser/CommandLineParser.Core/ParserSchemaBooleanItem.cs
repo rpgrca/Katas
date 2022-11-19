@@ -4,8 +4,7 @@ namespace CommandLineParser.Core
 {
     internal class ParserSchemaBooleanItem : ParserSchemaItem
     {
-        public ParserSchemaBooleanItem(string flag) :
-            base(flag) =>
+        public ParserSchemaBooleanItem(string flag) : base(flag) =>
             Value = false.ToString();
 
         public override void Extract(Queue<string> queue) =>

@@ -14,7 +14,7 @@ namespace CommandLineParser.Core
         public virtual void Extract(Queue<string> queue)
         {
             Value = queue.Dequeue();
-            if (Value.StartsWith("-"))
+            if (Value[0] == '-')
             {
                 throw new ArgumentException(ParserSchema.VALUE_IS_MISSING_EXCEPTION);
             }

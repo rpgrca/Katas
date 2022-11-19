@@ -21,8 +21,7 @@ namespace CommandLineParser.Core
             var queue = new Queue<string>(flags);
             while (queue.Count > 0)
             {
-                var flagWithDash = queue.Dequeue();
-                var flagWithoutDash = RemoveDash(flagWithDash);
+                var flagWithoutDash = RemoveDash(queue.Dequeue());
                 var item = _schemaItems
                     .SingleOrDefault(p => flagWithoutDash == p.Flag);
 
@@ -35,15 +34,8 @@ namespace CommandLineParser.Core
             }
         }
 
-        private string RemoveDash(string flag)
-        {
-            if (flag.StartsWith("-"))
-            {
-                return flag.Remove(0, 1);
-            }
-
-            return flag;
-        }
+        private string RemoveDash(string flag) =>
+            flag[0] == '-'? flag.Substring(1) : flag;
 
         public int GetInteger(string flag) =>
             int.Parse(GetValueFor(flag));
@@ -53,7 +45,8 @@ namespace CommandLineParser.Core
 
         private string GetValueFor(string flag) =>
             _schemaItems
-                .SingleOrDefault(p => flag == p.Flag)?
-                .Value ?? throw new ArgumentException(FLAG_IS_UNKNOWN_EXCEPTION);
+                .SingleOrDefault(p => flag == p.Flag)
+                ?. Value
+                ?? throw new ArgumentException(FLAG_IS_UNKNOWN_EXCEPTION);
     }
 }
