@@ -4,38 +4,46 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
 
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
 
   - package-ecosystem: "nuget"
     directory: "/BowlingGame"
     schedule:
       interval: "weekly"
+      day: "monday"
 
   - package-ecosystem: "nuget"
     directory: "/FizzBuzz"
     schedule:
       interval: "weekly"
+      day: "monday"
 
   - package-ecosystem: "nuget"
     directory: "/MarsRover"
     schedule:
       interval: "weekly"
+      day: "monday"
 
   - package-ecosystem: "nuget"
     directory: "/ScoreKeeper"
     schedule:
       interval: "weekly"
+      day: "monday"
 
   - package-ecosystem: "nuget"
     directory: "/TicTacToe"
     schedule:
       interval: "weekly"
+      day: "monday"
 
   - package-ecosystem: "nuget"
     directory: "/Wardrobe"
     schedule:
       interval: "weekly"
+      day: "monday"
