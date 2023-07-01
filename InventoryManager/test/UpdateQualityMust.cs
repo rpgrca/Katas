@@ -69,4 +69,17 @@ public class UpdateQualityMust
         Assert.Equal(10, item.Quality);
     }
 
+    [Theory]
+    [InlineData(10, 11)]
+    [InlineData(49, 50)]
+    [InlineData(50, 50)]
+    public void IncreaseQualityUntil50_WhenItemIsAgedBrieAndIsNotExpired(int quality, int expectedQuality)
+    {
+        var item = CreateItem("Aged Brie", quality: quality);
+        var sut = new Logic.InventoryManager();
+
+        sut.UpdateQuality(new[] { item });
+
+        Assert.Equal(expectedQuality, item.Quality);
+    }
 }
