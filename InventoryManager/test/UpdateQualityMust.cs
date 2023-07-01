@@ -7,33 +7,29 @@ public class UpdateQualityMust
     [Fact]
     public void DecreaseItemQuality_WhenItIsNotSpecial()
     {
-        var item = new Item
-        {
-            Name = "Anything",
-            SellIn = 10,
-            Quality = 10
-        };
-
-        var items = new[] { item };
-
+        var item = CreateItem();
         var sut = new Logic.InventoryManager();
-        sut.UpdateQuality(items);
+
+        sut.UpdateQuality(new[] { item });
 
         Assert.Equal("Anything", item.Name);
         Assert.Equal(9, item.Quality);
     }
 
+    private static Item CreateItem(string name = "Anything", int sellIn = 10, int quality = 10) =>
+        new()
+        {
+            Name = name,
+            SellIn = sellIn,
+            Quality = quality
+        };
+
     [Fact]
     public void DecreaseSellInTime_WhenItIsNotSpecial()
     {
-        var item = new Item
-        {
-            Name = "Anything",
-            SellIn = 10,
-            Quality = 10
-        };
-
+        var item = CreateItem();
         var sut = new Logic.InventoryManager();
+
         sut.UpdateQuality(new[] { item });
 
         Assert.Equal("Anything", item.Name);
@@ -43,14 +39,9 @@ public class UpdateQualityMust
     [Fact]
     public void DecreaseQualityTwice_WhenItemSellInExpired()
     {
-        var item = new Item
-        {
-            Name = "Anything",
-            SellIn = 0,
-            Quality = 10
-        };
-
+        var item = CreateItem(sellIn: 0);
         var sut = new Logic.InventoryManager();
+
         sut.UpdateQuality(new[] { item });
 
         Assert.Equal(8, item.Quality);
@@ -59,14 +50,9 @@ public class UpdateQualityMust
     [Fact]
     public void DoNotDecreaseSellIn_WhenItemIsSulfurasHandOfRagnaros()
     {
-        var item = new Item
-        {
-            Name = "Sulfuras, Hand of Ragnaros",
-            SellIn = 10,
-            Quality = 10
-        };
-
+        var item = CreateItem("Sulfuras, Hand of Ragnaros");
         var sut = new Logic.InventoryManager();
+
         sut.UpdateQuality(new[] { item });
 
         Assert.Equal(10, item.SellIn);
@@ -75,14 +61,9 @@ public class UpdateQualityMust
     [Fact]
     public void DoNotDecreaseQuality_WhenItemIsSulfurasHandOfRagnaros()
     {
-        var item = new Item
-        {
-            Name = "Sulfuras, Hand of Ragnaros",
-            SellIn = 10,
-            Quality = 10
-        };
-
+        var item = CreateItem("Sulfuras, Hand of Ragnaros");
         var sut = new Logic.InventoryManager();
+
         sut.UpdateQuality(new[] { item });
 
         Assert.Equal(10, item.Quality);
