@@ -1,3 +1,5 @@
+namespace InventoryManager.Logic;
+
 public class InventoryManager
 {
     public void UpdateQuality(Item[] items)
