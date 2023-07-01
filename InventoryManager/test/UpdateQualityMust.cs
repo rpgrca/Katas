@@ -55,4 +55,21 @@ public class UpdateQualityMust
 
         Assert.Equal(8, item.Quality);
     }
+
+    [Fact]
+    public void DoNotDecreaseSellIn_WhenItemIsSulfurasHandOfRagnaros()
+    {
+        var item = new Item
+        {
+            Name = "Sulfuras, Hand of Ragnaros",
+            SellIn = 10,
+            Quality = 10
+        };
+
+        var sut = new Logic.InventoryManager();
+        sut.UpdateQuality(new[] { item });
+
+        Assert.Equal(10, item.Quality);
+    }
+
 }
