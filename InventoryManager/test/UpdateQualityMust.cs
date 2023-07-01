@@ -33,12 +33,26 @@ public class UpdateQualityMust
             Quality = 10
         };
 
-        var items = new[] { item };
-
         var sut = new Logic.InventoryManager();
-        sut.UpdateQuality(items);
+        sut.UpdateQuality(new[] { item });
 
         Assert.Equal("Anything", item.Name);
         Assert.Equal(9, item.SellIn);
+    }
+
+    [Fact]
+    public void DecreaseQualityTwice_WhenItemSellInExpired()
+    {
+        var item = new Item
+        {
+            Name = "Anything",
+            SellIn = 0,
+            Quality = 10
+        };
+
+        var sut = new Logic.InventoryManager();
+        sut.UpdateQuality(new[] { item });
+
+        Assert.Equal(8, item.Quality);
     }
 }
