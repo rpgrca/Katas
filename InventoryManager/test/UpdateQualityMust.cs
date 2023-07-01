@@ -24,15 +24,17 @@ public class UpdateQualityMust
             Quality = quality
         };
 
-    [Fact]
-    public void DecreaseSellInTime_WhenItIsNotSpecial()
+    [Theory]
+    [InlineData("Anything")]
+    [InlineData("Aged Brie")]
+    public void DecreaseSellInTime_WhenItIsNotSpecial(string itemName)
     {
-        var item = CreateItem();
+        var item = CreateItem(itemName);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
 
-        Assert.Equal("Anything", item.Name);
+        Assert.Equal(itemName, item.Name);
         Assert.Equal(9, item.SellIn);
     }
 
