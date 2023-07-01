@@ -69,6 +69,22 @@ public class UpdateQualityMust
         var sut = new Logic.InventoryManager();
         sut.UpdateQuality(new[] { item });
 
+        Assert.Equal(10, item.SellIn);
+    }
+
+    [Fact]
+    public void DoNotDecreaseQuality_WhenItemIsSulfurasHandOfRagnaros()
+    {
+        var item = new Item
+        {
+            Name = "Sulfuras, Hand of Ragnaros",
+            SellIn = 10,
+            Quality = 10
+        };
+
+        var sut = new Logic.InventoryManager();
+        sut.UpdateQuality(new[] { item });
+
         Assert.Equal(10, item.Quality);
     }
 
