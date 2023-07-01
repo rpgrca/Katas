@@ -1,6 +1,6 @@
 namespace InventoryManager.UnitTests;
 
-public class UnitTest1
+public class UpdateQualityMust
 {
     [Fact]
     public void Test1()
