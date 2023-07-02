@@ -10,10 +10,16 @@ public class QualityUpdater
         _item = item;
         _rules = new Rule[]
         {
-            new("Sulfuras, Hand of Ragnaros", i => false, i => {}, i => false, i => {}),
+            new("Sulfuras, Hand of Ragnaros",
+                Rule.AlwaysFalse,
+                Rule.DoNothing,
+                Rule.AlwaysFalse,
+                Rule.DoNothing),
             new("Aged Brie",
-                i => i.Quality < 50, i => i.Quality += 1,
-                i => true, i => {
+                Rule.CanIncrementQuality,
+                Rule.IncrementQuality,
+                Rule.AlwaysTrue,
+                i => {
                     i.Quality += 1;
                     if (i.Quality > 50)
                     {
@@ -21,7 +27,8 @@ public class QualityUpdater
                     }
                 }),
             new("Backstage passes to a TAFKAL80ETC concert",
-                i => i.Quality < 50, i => {
+                Rule.CanIncrementQuality,
+                i => {
                     i.Quality += i.SellIn switch {
                         < 6 => 3,
                         < 11 => 2,
@@ -33,10 +40,13 @@ public class QualityUpdater
                         i.Quality = 50;
                     }
                 },
-                i => i.SellIn <= 0, i => i.Quality = 0),
+                Rule.Expired,
+                Rule.ResetQuality),
             new("",
-                i => i.Quality > 0, i => i.Quality -= 1,
-                i => true, i => {
+                Rule.CanDecrementQuality,
+                Rule.DecrementQuality,
+                Rule.AlwaysTrue,
+                i => {
                     i.Quality -= 1;
                     if (i.Quality < 0)
                     {
