@@ -10,7 +10,7 @@ public class QualityUpdater
     {
         if (_item.Name != "Aged Brie" && _item.Name != "Backstage passes to a TAFKAL80ETC concert")
         {
-            if (_item.Quality > 0)
+            if (CanDecreaseQuality())
             {
                 if (_item.Name != "Sulfuras, Hand of Ragnaros")
                 {
@@ -20,7 +20,7 @@ public class QualityUpdater
         }
         else
         {
-            if (_item.Quality < 50)
+            if (CanIncrementQuality())
             {
                 IncreaseQuality();
 
@@ -28,7 +28,7 @@ public class QualityUpdater
                 {
                     if (_item.SellIn < 11)
                     {
-                        if (_item.Quality < 50)
+                        if (CanIncrementQuality())
                         {
                             IncreaseQuality();
                         }
@@ -36,7 +36,7 @@ public class QualityUpdater
 
                     if (_item.SellIn < 6)
                     {
-                        if (_item.Quality < 50)
+                        if (CanIncrementQuality())
                         {
                             IncreaseQuality();
                         }
@@ -47,7 +47,7 @@ public class QualityUpdater
 
         if (_item.Name != "Sulfuras, Hand of Ragnaros")
         {
-            _item.SellIn = _item.SellIn - 1;
+            DecreaseSellIn();
         }
 
         if (_item.SellIn < 0)
@@ -56,7 +56,7 @@ public class QualityUpdater
             {
                 if (_item.Name != "Backstage passes to a TAFKAL80ETC concert")
                 {
-                    if (_item.Quality > 0)
+                    if (CanDecreaseQuality())
                     {
                         if (_item.Name != "Sulfuras, Hand of Ragnaros")
                         {
@@ -72,7 +72,7 @@ public class QualityUpdater
             }
             else
             {
-                if (_item.Quality < 50)
+                if (CanIncrementQuality())
                 {
                     IncreaseQuality();
                 }
@@ -85,4 +85,11 @@ public class QualityUpdater
     private void DecreaseQuality() => _item.Quality -= 1;
 
     private void ResetQuality() => _item.Quality = 0;
+
+    private bool CanIncrementQuality() => _item.Quality < 50;
+
+    private bool CanDecreaseQuality() => _item.Quality > 0;
+
+    private void DecreaseSellIn() => _item.SellIn -= 1;
+
 }
