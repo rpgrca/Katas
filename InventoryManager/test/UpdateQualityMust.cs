@@ -64,9 +64,20 @@ public class UpdateQualityMust
     }
 
     [Fact]
-    public void DoNotDecreaseQuality_WhenItemIsSulfurasHandOfRagnaros()
+    public void DoNotDecreaseQuality_WhenItemIsInDateSulfurasHandOfRagnaros()
     {
         var item = CreateItem("Sulfuras, Hand of Ragnaros");
+        var sut = new Logic.InventoryManager();
+
+        sut.UpdateQuality(new[] { item });
+
+        Assert.Equal(10, item.Quality);
+    }
+
+    [Fact]
+    public void DoNotDecreaseQuality_WhenItemIsExpiredSulfurasHandOfRagnaros()
+    {
+        var item = CreateItem("Sulfuras, Hand of Ragnaros", -1);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
