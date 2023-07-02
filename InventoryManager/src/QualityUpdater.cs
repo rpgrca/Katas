@@ -1,28 +1,5 @@
 namespace InventoryManager.Logic;
 
-public class Rule
-{
-    private readonly string _name;
-    private readonly Func<Item, bool> _qualityUpdateCondition;
-    private readonly Action<Item> _qualityUpdate;
-
-    public Rule(string name, Func<Item, bool> qualityUpdateCondition, Action<Item> qualityUpdate)
-    {
-        _name = name;
-        _qualityUpdateCondition = qualityUpdateCondition;
-        _qualityUpdate = qualityUpdate;
-    }
-
-    public bool CanApplyOn(Item item) => _name == item.Name || string.IsNullOrEmpty(_name);
-
-    public void UpdateItem(Item item) {
-        if (_qualityUpdateCondition(item))
-        {
-            _qualityUpdate(item);
-        }
-    }
-}
-
 public class QualityUpdater
 {
     private readonly Item _item;
@@ -33,22 +10,28 @@ public class QualityUpdater
         _item = item;
         _rules = new Rule[]
         {
-            new("Sulfuras, Hand of Ragnaros", i => false, i => {}),
-            new("Aged Brie", i => i.Quality < 50, i => i.Quality += 1),
-            new("Backstage passes to a TAFKAL80ETC concert", i => false, i => {}),
-            new("", i => false, i => {})
+            new("Sulfuras, Hand of Ragnaros", i => false, i => {}, i => false, i => {}),
+            new("Aged Brie",
+                i => i.Quality < 50,
+                i => i.Quality += 1,
+                i => i.Quality < 50,
+                i => i.Quality += 1),
+            new("Backstage passes to a TAFKAL80ETC concert", i => false, i => {}, i => false, i => {}),
+            new("", i => false, i => {}, i => false, i => {})
         };
     }
 
     public void Update()
     {
         var rule = _rules.First(r => r.CanApplyOn(_item));
-        rule?.UpdateItem(_item);
+        rule?.Apply(_item);
 
         if (_item.Name == "Sulfuras, Hand of Ragnaros")
         {
             return;
         }
+
+        DecreaseSellIn();
 
         if (_item.Name != "Aged Brie" && _item.Name != "Backstage passes to a TAFKAL80ETC concert")
         {
@@ -81,8 +64,6 @@ public class QualityUpdater
                 }
             }
         }
-
-        DecreaseSellIn();
 
         if (Expired())
         {
