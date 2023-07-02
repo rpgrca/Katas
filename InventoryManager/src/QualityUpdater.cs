@@ -17,7 +17,7 @@ public class QualityUpdater
                 i => i.Quality < 50,
                 i => i.Quality += 1),
             new("Backstage passes to a TAFKAL80ETC concert", i => false, i => {}, i => false, i => {}),
-            new("", i => false, i => {}, i => false, i => {})
+            new("", i => i.Quality > 0, i => i.Quality -= 1, i => false, i => {})
         };
     }
 
@@ -32,14 +32,6 @@ public class QualityUpdater
         }
 
         DecreaseSellIn();
-
-        if (_item.Name != "Aged Brie" && _item.Name != "Backstage passes to a TAFKAL80ETC concert")
-        {
-            if (CanDecreaseQuality())
-            {
-                DecreaseQuality();
-            }
-        }
 
         if (_item.Name == "Backstage passes to a TAFKAL80ETC concert")
         {
