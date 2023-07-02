@@ -2,40 +2,90 @@ namespace InventoryManager.Logic;
 
 public class QualityUpdater
 {
-    private const string ANYTHING_ELSE = "";
-    private readonly Item _item;
-    private readonly Rule[] _rules;
+    public interface IBuilderQualityUpdateCondition
+    {
+        IBuilderQualityUpdate CheckingQualityUpdateWith(Func<Item, bool> condition);
+        Builder Next();
+    }
 
-    public QualityUpdater(Item item)
+    public interface IBuilderQualityUpdate
+    {
+        IBuilderExpirationCondition UpdatingQualityWith(Action<Item> action);
+    }
+
+    public interface IBuilderExpirationCondition
+    {
+        IBuilderWhenExpired CanCheckExpiration(Func<Item, bool> condition);
+    }
+
+    public interface IBuilderWhenExpired
+    {
+        Builder WhenExpiredDo(Action<Item> action);
+    }
+
+    public class Builder : IBuilderQualityUpdateCondition, IBuilderQualityUpdate, IBuilderExpirationCondition, IBuilderWhenExpired
+    {
+        private string _name;
+        private Func<Item, bool> _canUpdateQuality;
+        private Action<Item> _updateQuality;
+        private Func<Item, bool> _canExpire;
+
+        private readonly List<Rule> _rules = new();
+
+        public Builder()
+        {
+            _name = string.Empty;
+            _canUpdateQuality = Rule.AlwaysFalse;
+            _updateQuality = Rule.DoNothing;
+            _canExpire = Rule.AlwaysFalse;
+        }
+
+        public IBuilderQualityUpdateCondition Add(string name)
+        {
+            _name = name;
+            return this;
+        }
+
+        IBuilderQualityUpdate IBuilderQualityUpdateCondition.CheckingQualityUpdateWith(Func<Item, bool> canUpdateQuality)
+        {
+            _canUpdateQuality = canUpdateQuality;
+            return this;
+        }
+
+        Builder IBuilderQualityUpdateCondition.Next()
+        {
+            _rules.Add(new(_name, _canUpdateQuality, _updateQuality, _canExpire, Rule.DoNothing));
+            return this;
+        }
+
+        IBuilderExpirationCondition IBuilderQualityUpdate.UpdatingQualityWith(Action<Item> action)
+        {
+            _updateQuality = action;
+            return this;
+        }
+
+        IBuilderWhenExpired IBuilderExpirationCondition.CanCheckExpiration(Func<Item, bool> condition)
+        {
+            _canExpire = condition;
+            return this;
+        }
+
+        Builder IBuilderWhenExpired.WhenExpiredDo(Action<Item> action)
+        {
+            _rules.Add(new(_name, _canUpdateQuality, _updateQuality, _canExpire, action));
+            return this;
+        }
+
+        public QualityUpdater BuildFor(Item item) => new QualityUpdater(item, _rules);
+    }
+
+    private readonly Item _item;
+    private readonly List<Rule> _rules;
+
+    private QualityUpdater(Item item, List<Rule> rules)
     {
         _item = item;
-        _rules = new Rule[]
-        {
-            new("Sulfuras, Hand of Ragnaros", Rule.AlwaysFalse, Rule.DoNothing, Rule.AlwaysFalse, Rule.DoNothing),
-            new("Aged Brie", Rule.CanIncrementQuality, Rule.IncrementQuality, Rule.AlwaysTrue,
-                i => {
-                    i.Quality += 1;
-                    Rule.CapTopQuality(i);
-                }),
-            new("Backstage passes to a TAFKAL80ETC concert",
-                Rule.CanIncrementQuality,
-                i => {
-                    i.Quality += i.SellIn switch {
-                        < 6 => 3,
-                        < 11 => 2,
-                        _ => 1
-                    };
-
-                    Rule.CapTopQuality(i);
-                },
-                Rule.Expired,
-                Rule.ResetQuality),
-            new(ANYTHING_ELSE, Rule.CanDecrementQuality, Rule.DecrementQuality, Rule.AlwaysTrue,
-                i => {
-                    i.Quality -= 1;
-                    Rule.CapLowerQuality(i);
-                })
-        };
+        _rules = rules;
     }
 
     public void Update()
