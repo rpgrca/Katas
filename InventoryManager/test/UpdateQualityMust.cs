@@ -41,15 +41,17 @@ public class UpdateQualityMust
         Assert.Equal(9, item.SellIn);
     }
 
-    [Fact]
-    public void DecreaseQualityTwice_WhenItemSellInExpired()
+    [Theory]
+    [InlineData(10, 8)]
+    [InlineData(0, 0)]
+    public void DecreaseQualityTwiceUntilZero_WhenItemSellInExpired(int quality, int expectedQuality)
     {
-        var item = CreateItem(sellIn: 0);
+        var item = CreateItem(sellIn: 0, quality: quality);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
 
-        Assert.Equal(8, item.Quality);
+        Assert.Equal(expectedQuality, item.Quality);
     }
 
     [Fact]
