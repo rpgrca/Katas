@@ -4,10 +4,14 @@ namespace InventoryManager.UnitTests;
 
 public class UpdateQualityMust
 {
+    private const string CommonItemName = "Anything";
+    private const int StartingQuality = 10;
+    private const int StartingSellIn = 10;
+
     [Theory]
-    [InlineData(10, 9)]
-    [InlineData(1, 0)]
-    [InlineData(0, 0)]
+    [InlineData(StartingQuality, StartingQuality - 1)]
+    [InlineData(Rule.MinimumQuality + 1, Rule.MinimumQuality)]
+    [InlineData(Rule.MinimumQuality, Rule.MinimumQuality)]
     public void DecreaseItemQualityUntilZero_WhenItIsNotSpecial(int quality, int expectedQuality)
     {
         var item = CreateItem(quality: quality);
@@ -15,11 +19,11 @@ public class UpdateQualityMust
 
         sut.UpdateQuality(new[] { item });
 
-        Assert.Equal("Anything", item.Name);
+        Assert.Equal(CommonItemName, item.Name);
         Assert.Equal(expectedQuality, item.Quality);
     }
 
-    private static Item CreateItem(string name = "Anything", int sellIn = 10, int quality = 10) =>
+    private static Item CreateItem(string name = CommonItemName, int sellIn = StartingSellIn, int quality = StartingQuality) =>
         new()
         {
             Name = name,
@@ -28,8 +32,8 @@ public class UpdateQualityMust
         };
 
     [Theory]
-    [InlineData("Anything")]
-    [InlineData("Aged Brie")]
+    [InlineData(CommonItemName)]
+    [InlineData(Logic.InventoryManager.AgedBrie)]
     public void DecreaseSellInTime_WhenItIsNotSpecial(string itemName)
     {
         var item = CreateItem(itemName);
@@ -38,15 +42,15 @@ public class UpdateQualityMust
         sut.UpdateQuality(new[] { item });
 
         Assert.Equal(itemName, item.Name);
-        Assert.Equal(9, item.SellIn);
+        Assert.Equal(StartingSellIn - 1, item.SellIn);
     }
 
     [Theory]
-    [InlineData(10, 8)]
-    [InlineData(0, 0)]
+    [InlineData(StartingQuality, StartingQuality - 2)]
+    [InlineData(Rule.MinimumQuality, Rule.MinimumQuality)]
     public void DecreaseQualityTwiceUntilZero_WhenItemSellInExpired(int quality, int expectedQuality)
     {
-        var item = CreateItem(sellIn: 0, quality: quality);
+        var item = CreateItem(sellIn: Rule.MinimumSellIn, quality: quality);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
@@ -57,43 +61,43 @@ public class UpdateQualityMust
     [Fact]
     public void DoNotDecreaseSellIn_WhenItemIsSulfurasHandOfRagnaros()
     {
-        var item = CreateItem("Sulfuras, Hand of Ragnaros");
+        var item = CreateItem(Logic.InventoryManager.SulfurasHandOfRagnaros);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
 
-        Assert.Equal(10, item.SellIn);
+        Assert.Equal(StartingSellIn, item.SellIn);
     }
 
     [Fact]
     public void DoNotDecreaseQuality_WhenItemIsInDateSulfurasHandOfRagnaros()
     {
-        var item = CreateItem("Sulfuras, Hand of Ragnaros");
+        var item = CreateItem(Logic.InventoryManager.SulfurasHandOfRagnaros);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
 
-        Assert.Equal(10, item.Quality);
+        Assert.Equal(StartingQuality, item.Quality);
     }
 
     [Fact]
     public void DoNotDecreaseQuality_WhenItemIsExpiredSulfurasHandOfRagnaros()
     {
-        var item = CreateItem("Sulfuras, Hand of Ragnaros", -1);
+        var item = CreateItem(Logic.InventoryManager.SulfurasHandOfRagnaros, Rule.MinimumSellIn - 1);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
 
-        Assert.Equal(10, item.Quality);
+        Assert.Equal(StartingQuality, item.Quality);
     }
 
     [Theory]
-    [InlineData(10, 11)]
-    [InlineData(49, 50)]
-    [InlineData(50, 50)]
+    [InlineData(StartingQuality, StartingQuality + 1)]
+    [InlineData(Rule.MaximumQuality - 1, Rule.MaximumQuality)]
+    [InlineData(Rule.MaximumQuality, Rule.MaximumQuality)]
     public void IncreaseQualityOnceUntil50_WhenItemIsInDateAgedBrie(int quality, int expectedQuality)
     {
-        var item = CreateItem("Aged Brie", quality: quality);
+        var item = CreateItem(Logic.InventoryManager.AgedBrie, quality: quality);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
@@ -102,12 +106,12 @@ public class UpdateQualityMust
     }
 
     [Theory]
-    [InlineData(10, 12)]
-    [InlineData(49, 50)]
-    [InlineData(50, 50)]
+    [InlineData(StartingQuality, StartingQuality + 2)]
+    [InlineData(Rule.MaximumQuality - 1, Rule.MaximumQuality)]
+    [InlineData(Rule.MaximumQuality, Rule.MaximumQuality)]
     public void IncreaseQualityTwiceUntil50_WhenItemIsExpiredAgedBrie(int quality, int expectedQuality)
     {
-        var item = CreateItem("Aged Brie", 0, quality);
+        var item = CreateItem(Logic.InventoryManager.AgedBrie, Rule.MinimumSellIn, quality);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
@@ -116,12 +120,12 @@ public class UpdateQualityMust
     }
 
     [Theory]
-    [InlineData(10, 11)]
-    [InlineData(49, 50)]
-    [InlineData(50, 50)]
+    [InlineData(StartingQuality, StartingQuality + 1)]
+    [InlineData(Rule.MaximumQuality - 1, Rule.MaximumQuality)]
+    [InlineData(Rule.MaximumQuality, Rule.MaximumQuality)]
     public void IncreaseQualityOnceUntil50_WhenPassExpirationIsOver11Days(int quality, int expectedQuality)
     {
-        var item = CreateItem("Backstage passes to a TAFKAL80ETC concert", 13, quality);
+        var item = CreateItem(Logic.InventoryManager.BackstagePassesToTafkal80etcConcert, 13, quality);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
@@ -130,12 +134,12 @@ public class UpdateQualityMust
     }
 
     [Theory]
-    [InlineData(10, 12)]
-    [InlineData(49, 50)]
-    [InlineData(50, 50)]
+    [InlineData(StartingQuality, StartingQuality + 2)]
+    [InlineData(Rule.MaximumQuality - 1, Rule.MaximumQuality)]
+    [InlineData(Rule.MaximumQuality, Rule.MaximumQuality)]
     public void IncreaseQualityTwiceUntil50_WhenPassExpirationIsBetween6And10Days(int quality, int expectedQuality)
     {
-        var item = CreateItem("Backstage passes to a TAFKAL80ETC concert", quality: quality);
+        var item = CreateItem(Logic.InventoryManager.BackstagePassesToTafkal80etcConcert, quality: quality);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
@@ -144,13 +148,13 @@ public class UpdateQualityMust
     }
 
     [Theory]
-    [InlineData(10, 13)]
-    [InlineData(48, 50)]
-    [InlineData(49, 50)]
-    [InlineData(50, 50)]
+    [InlineData(StartingQuality, StartingQuality + 3)]
+    [InlineData(Rule.MaximumQuality - 2, Rule.MaximumQuality)]
+    [InlineData(Rule.MaximumQuality - 1, Rule.MaximumQuality)]
+    [InlineData(Rule.MaximumQuality, Rule.MaximumQuality)]
     public void IncreaseQualityThriceUntil50_WhenPassExpirationIsLessThan6Days(int quality, int expectedQuality)
     {
-        var item = CreateItem("Backstage passes to a TAFKAL80ETC concert", 5, quality: quality);
+        var item = CreateItem(Logic.InventoryManager.BackstagePassesToTafkal80etcConcert, 5, quality);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
@@ -159,15 +163,15 @@ public class UpdateQualityMust
     }
 
     [Theory]
-    [InlineData(10)]
+    [InlineData(StartingQuality)]
     [InlineData(1)]
-    public void DecreaseQualityToZero_WhenPassExpires(int quality)
+    public void DecreaseQualityToMinimumQuality_WhenPassExpires(int quality)
     {
-        var item = CreateItem("Backstage passes to a TAFKAL80ETC concert", 0, quality);
+        var item = CreateItem(Logic.InventoryManager.BackstagePassesToTafkal80etcConcert, Rule.MinimumSellIn, quality);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
 
-        Assert.Equal(0, item.Quality);
+        Assert.Equal(Rule.MinimumQuality, item.Quality);
     }
 }

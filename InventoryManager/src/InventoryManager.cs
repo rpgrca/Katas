@@ -2,20 +2,24 @@ namespace InventoryManager.Logic;
 
 public class InventoryManager
 {
-    private const string ANYTHING_ELSE = "";
+    private const string AnythingElse = "";
+    public const string SulfurasHandOfRagnaros = "Sulfuras, Hand of Ragnaros";
+    public const string AgedBrie = "Aged Brie";
+    public const string BackstagePassesToTafkal80etcConcert = "Backstage passes to a TAFKAL80ETC concert";
+
     private readonly List<Rule> _rules;
 
     public InventoryManager()
     {
         _rules = new List<Rule>
         {
-            new("Sulfuras, Hand of Ragnaros", Rule.AlwaysFalse, Rule.DoNothing, Rule.AlwaysFalse, Rule.DoNothing),
-            new("Aged Brie", Rule.CanIncrementQuality, Rule.IncrementQuality, Rule.AlwaysTrue,
+            new(SulfurasHandOfRagnaros, Rule.AlwaysFalse, Rule.DoNothing, Rule.AlwaysFalse, Rule.DoNothing),
+            new(AgedBrie, Rule.CanIncrementQuality, Rule.IncrementQuality, Rule.AlwaysTrue,
                 i => {
                     Rule.IncrementQuality(i);
                     Rule.CapTopQuality(i);
                 }),
-            new("Backstage passes to a TAFKAL80ETC concert", Rule.CanIncrementQuality,
+            new(BackstagePassesToTafkal80etcConcert, Rule.CanIncrementQuality,
                 i => {
                     i.Quality += i.SellIn switch {
                         < 6 => 3,
@@ -27,7 +31,7 @@ public class InventoryManager
                 },
                 Rule.Expired,
                 Rule.ResetQuality),
-            new(ANYTHING_ELSE, Rule.CanDecrementQuality, Rule.DecrementQuality, Rule.AlwaysTrue,
+            new(AnythingElse, Rule.CanDecrementQuality, Rule.DecrementQuality, Rule.AlwaysTrue,
                 i => {
                     Rule.DecrementQuality(i);
                     Rule.CapLowerQuality(i);

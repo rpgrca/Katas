@@ -2,6 +2,10 @@ namespace InventoryManager.Logic;
 
 public class Rule
 {
+    public const int MaximumQuality = 50;
+    public const int MinimumQuality = 0;
+    public const int MinimumSellIn = 0;
+
     private readonly string _name;
     private readonly Func<Item, bool> _canUpdateQuality;
     private readonly Action<Item> _updateQuality;
@@ -39,21 +43,21 @@ public class Rule
         }
     }
 
-    public static bool CanIncrementQuality(Item item) => item.Quality < 50;
+    public static bool CanIncrementQuality(Item item) => item.Quality < MaximumQuality;
 
-    public static bool CanDecrementQuality(Item item) => item.Quality > 0;
+    public static bool CanDecrementQuality(Item item) => item.Quality > MinimumQuality;
 
     public static void DecrementQuality(Item item) => item.Quality -= 1;
 
     public static void IncrementQuality(Item item) => item.Quality += 1;
 
-    public static void ResetQuality(Item item) => item.Quality = 0;
+    public static void ResetQuality(Item item) => item.Quality = MinimumQuality;
 
     public static bool AlwaysTrue(Item _) => true;
 
     public static bool AlwaysFalse(Item _) => false;
 
-    public static bool Expired(Item item) => item.SellIn < 1;
+    public static bool Expired(Item item) => item.SellIn <= MinimumSellIn;
 
     public static void DoNothing(Item _)
     {
@@ -61,19 +65,19 @@ public class Rule
 
     public static void CapTopQuality(Item item)
     {
-        if (item.Quality > 50)
+        if (item.Quality > MaximumQuality)
         {
-            item.Quality = 50;
+            item.Quality = MaximumQuality;
         }
     }
 
     public static void CapLowerQuality(Item item)
     {
-        if (item.Quality < 0)
+        if (item.Quality < MinimumQuality)
         {
-            item.Quality = 0;
+            item.Quality = MinimumQuality;
         }
     }
 
-    public static void MakeItemOlder(Item item) => item.SellIn -= 1;
+    private static void MakeItemOlder(Item item) => item.SellIn -= 1;
 }
