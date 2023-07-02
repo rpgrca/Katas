@@ -1,7 +1,5 @@
 ﻿namespace DrugSafetyAnalyzer.Logic;
 
-public record Rule(string[] Ingredients, SafetyLevel Level);
-
 public class DrugSafetyAnalyzer
 {
     private readonly List<Rule> _rules;
@@ -27,12 +25,10 @@ public class DrugSafetyAnalyzer
 
     private Rule FindFittingtRuleFor(Drug drug)
     {
-        foreach (var rule in _rules)
+        var rules = _rules.Where(r => !r.Ingredients.Except(drug.Ingredients).Any());
+        if (rules.Any())
         {
-            if (! rule.Ingredients.Except(drug.Ingredients).Any())
-            {
-                return rule;
-            }
+            return rules.MaxBy(p => p.Level)!;
         }
 
         return _defaultSafeRule;

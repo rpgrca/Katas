@@ -85,4 +85,20 @@ public class DrugSafetyAnalyzerMust
 
         Assert.Equal(SafetyLevel.Mortal, result);
     }
+
+    [Fact]
+    public void ReturnMortalLevel_WhenDrugHasMoreThanOneMatch()
+    {
+        var drug = new Drug
+        {
+            Name = "Mortal Drug Too",
+            Ingredients = new() { "Warfarin", "Paracetamol", "Acetaminophen", "Codeine", "Aspirin" }
+        };
+
+        var sut = new Logic.DrugSafetyAnalyzer();
+        var result = sut.AnalyzeSafetyLevel(drug);
+
+        Assert.Equal(SafetyLevel.Mortal, result);
+    }
+
 }
