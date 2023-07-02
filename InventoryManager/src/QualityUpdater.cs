@@ -20,28 +20,34 @@ public class QualityUpdater
                 DecreaseQuality();
             }
         }
-        else
+
+        if (_item.Name == "Aged Brie")
+        {
+            if (CanIncrementQuality())
+            {
+                IncreaseQuality();
+            }
+        }
+
+        if (_item.Name == "Backstage passes to a TAFKAL80ETC concert")
         {
             if (CanIncrementQuality())
             {
                 IncreaseQuality();
 
-                if (_item.Name == "Backstage passes to a TAFKAL80ETC concert")
+                if (_item.SellIn < 11)
                 {
-                    if (_item.SellIn < 11)
+                    if (CanIncrementQuality())
                     {
-                        if (CanIncrementQuality())
-                        {
-                            IncreaseQuality();
-                        }
+                        IncreaseQuality();
                     }
+                }
 
-                    if (_item.SellIn < 6)
+                if (_item.SellIn < 6)
+                {
+                    if (CanIncrementQuality())
                     {
-                        if (CanIncrementQuality())
-                        {
-                            IncreaseQuality();
-                        }
+                        IncreaseQuality();
                     }
                 }
             }
@@ -51,22 +57,20 @@ public class QualityUpdater
 
         if (Expired())
         {
-            if (_item.Name != "Aged Brie")
+            if (_item.Name != "Aged Brie" && _item.Name != "Backstage passes to a TAFKAL80ETC concert")
             {
-                if (_item.Name != "Backstage passes to a TAFKAL80ETC concert")
+                if (CanDecreaseQuality())
                 {
-                    if (CanDecreaseQuality())
-                    {
-                        DecreaseQuality();
-                    }
-                }
-                else
-                {
-                    ResetQuality();
-
+                    DecreaseQuality();
                 }
             }
-            else
+
+            if (_item.Name == "Backstage passes to a TAFKAL80ETC concert")
+            {
+                ResetQuality();
+            }
+
+            if (_item.Name == "Aged Brie")
             {
                 if (CanIncrementQuality())
                 {
@@ -74,8 +78,8 @@ public class QualityUpdater
                 }
             }
         }
-
     }
+
     private void IncreaseQuality() => _item.Quality += 1;
 
     private void DecreaseQuality() => _item.Quality -= 1;
