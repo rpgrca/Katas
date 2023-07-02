@@ -4,16 +4,19 @@ namespace InventoryManager.UnitTests;
 
 public class UpdateQualityMust
 {
-    [Fact]
-    public void DecreaseItemQuality_WhenItIsNotSpecial()
+    [Theory]
+    [InlineData(10, 9)]
+    [InlineData(1, 0)]
+    [InlineData(0, 0)]
+    public void DecreaseItemQualityUntilZero_WhenItIsNotSpecial(int quality, int expectedQuality)
     {
-        var item = CreateItem();
+        var item = CreateItem(quality: quality);
         var sut = new Logic.InventoryManager();
 
         sut.UpdateQuality(new[] { item });
 
         Assert.Equal("Anything", item.Name);
-        Assert.Equal(9, item.Quality);
+        Assert.Equal(expectedQuality, item.Quality);
     }
 
     private static Item CreateItem(string name = "Anything", int sellIn = 10, int quality = 10) =>
