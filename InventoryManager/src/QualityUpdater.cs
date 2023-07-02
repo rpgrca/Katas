@@ -14,7 +14,7 @@ public class QualityUpdater
             {
                 if (_item.Name != "Sulfuras, Hand of Ragnaros")
                 {
-                    _item.Quality = _item.Quality - 1;
+                    DecreaseQuality();
                 }
             }
         }
@@ -22,7 +22,7 @@ public class QualityUpdater
         {
             if (_item.Quality < 50)
             {
-                _item.Quality = _item.Quality + 1;
+                IncreaseQuality();
 
                 if (_item.Name == "Backstage passes to a TAFKAL80ETC concert")
                 {
@@ -30,7 +30,7 @@ public class QualityUpdater
                     {
                         if (_item.Quality < 50)
                         {
-                            _item.Quality = _item.Quality + 1;
+                            IncreaseQuality();
                         }
                     }
 
@@ -38,7 +38,7 @@ public class QualityUpdater
                     {
                         if (_item.Quality < 50)
                         {
-                            _item.Quality = _item.Quality + 1;
+                            IncreaseQuality();
                         }
                     }
                 }
@@ -60,22 +60,29 @@ public class QualityUpdater
                     {
                         if (_item.Name != "Sulfuras, Hand of Ragnaros")
                         {
-                            _item.Quality = _item.Quality - 1;
+                            DecreaseQuality();
                         }
                     }
                 }
                 else
                 {
-                    _item.Quality = _item.Quality - _item.Quality;
+                    ResetQuality();
+
                 }
             }
             else
             {
                 if (_item.Quality < 50)
                 {
-                    _item.Quality = _item.Quality + 1;
+                    IncreaseQuality();
                 }
             }
         }
+
     }
+    private void IncreaseQuality() => _item.Quality += 1;
+
+    private void DecreaseQuality() => _item.Quality -= 1;
+
+    private void ResetQuality() => _item.Quality = 0;
 }
