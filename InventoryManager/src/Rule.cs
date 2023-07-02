@@ -24,15 +24,15 @@ public class Rule
         {
             _updateQuality(item);
 
-            if (item.Quality < 0) item.Quality = 0;
-            if (item.Quality > 50) item.Quality = 50;
+            CapLowerQuality(item);
+            CapTopQuality(item);
         }
 
         if (_canExpire(item))
         {
-            item.SellIn -= 1;
+            MakeItemOlder(item);
 
-            if (item.SellIn < 1)
+            if (Expired(item))
             {
                 _whenExpired(item);
             }
@@ -74,4 +74,6 @@ public class Rule
             item.Quality = 0;
         }
     }
+
+    public static void MakeItemOlder(Item item) => item.SellIn -= 1;
 }
