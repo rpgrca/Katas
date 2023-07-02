@@ -70,4 +70,19 @@ public class DrugSafetyAnalyzerMust
 
         Assert.Equal(SafetyLevel.Mortal, result);
     }
+
+    [Fact]
+    public void ReturnMortalLevel_WhenDrugHasMoreThanAspirinAndWarfarin()
+    {
+        var drug = new Drug
+        {
+            Name = "Mortal Drug Too",
+            Ingredients = new() { "Warfarin", "Paracetamol", "Caffeine", "Aspirin" }
+        };
+
+        var sut = new Logic.DrugSafetyAnalyzer();
+        var result = sut.AnalyzeSafetyLevel(drug);
+
+        Assert.Equal(SafetyLevel.Mortal, result);
+    }
 }
