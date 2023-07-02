@@ -49,7 +49,7 @@ public class QualityUpdater
 
         DecreaseSellIn();
 
-        if (_item.SellIn < 0)
+        if (Expired())
         {
             if (_item.Name != "Aged Brie")
             {
@@ -88,4 +88,5 @@ public class QualityUpdater
 
     private void DecreaseSellIn() => _item.SellIn -= 1;
 
+    private bool Expired() => _item.SellIn < 0;
 }
