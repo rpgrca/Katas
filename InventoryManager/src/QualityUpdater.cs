@@ -8,14 +8,16 @@ public class QualityUpdater
 
     public void Update()
     {
+        if (_item.Name == "Sulfuras, Hand of Ragnaros")
+        {
+            return;
+        }
+
         if (_item.Name != "Aged Brie" && _item.Name != "Backstage passes to a TAFKAL80ETC concert")
         {
             if (CanDecreaseQuality())
             {
-                if (_item.Name != "Sulfuras, Hand of Ragnaros")
-                {
-                    DecreaseQuality();
-                }
+                DecreaseQuality();
             }
         }
         else
@@ -45,10 +47,7 @@ public class QualityUpdater
             }
         }
 
-        if (_item.Name != "Sulfuras, Hand of Ragnaros")
-        {
-            DecreaseSellIn();
-        }
+        DecreaseSellIn();
 
         if (_item.SellIn < 0)
         {
@@ -58,10 +57,7 @@ public class QualityUpdater
                 {
                     if (CanDecreaseQuality())
                     {
-                        if (_item.Name != "Sulfuras, Hand of Ragnaros")
-                        {
-                            DecreaseQuality();
-                        }
+                        DecreaseQuality();
                     }
                 }
                 else
