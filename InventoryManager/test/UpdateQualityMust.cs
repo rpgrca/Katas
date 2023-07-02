@@ -100,20 +100,6 @@ public class UpdateQualityMust
     }
 
     [Theory]
-    [InlineData(10, 12)]
-    [InlineData(49, 50)]
-    [InlineData(50, 50)]
-    public void IncreaseQualityTwiceUntil50_WhenPassExpirationIsLessThan11Days(int quality, int expectedQuality)
-    {
-        var item = CreateItem("Backstage passes to a TAFKAL80ETC concert", quality: quality);
-        var sut = new Logic.InventoryManager();
-
-        sut.UpdateQuality(new[] { item });
-
-        Assert.Equal(expectedQuality, item.Quality);
-    }
-
-    [Theory]
     [InlineData(10, 11)]
     [InlineData(49, 50)]
     [InlineData(50, 50)]
@@ -126,4 +112,34 @@ public class UpdateQualityMust
 
         Assert.Equal(expectedQuality, item.Quality);
     }
+
+    [Theory]
+    [InlineData(10, 12)]
+    [InlineData(49, 50)]
+    [InlineData(50, 50)]
+    public void IncreaseQualityTwiceUntil50_WhenPassExpirationIsBetween6And10Days(int quality, int expectedQuality)
+    {
+        var item = CreateItem("Backstage passes to a TAFKAL80ETC concert", quality: quality);
+        var sut = new Logic.InventoryManager();
+
+        sut.UpdateQuality(new[] { item });
+
+        Assert.Equal(expectedQuality, item.Quality);
+    }
+
+    [Theory]
+    [InlineData(10, 13)]
+    [InlineData(48, 50)]
+    [InlineData(49, 50)]
+    [InlineData(50, 50)]
+    public void IncreaseQualityThriceUntil50_WhenPassExpirationIsLessThan6Days(int quality, int expectedQuality)
+    {
+        var item = CreateItem("Backstage passes to a TAFKAL80ETC concert", 5, quality: quality);
+        var sut = new Logic.InventoryManager();
+
+        sut.UpdateQuality(new[] { item });
+
+        Assert.Equal(expectedQuality, item.Quality);
+    }
+
 }
