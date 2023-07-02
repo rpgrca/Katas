@@ -28,14 +28,14 @@ jobs:
     - name: Restore packages
       run: |
            dotnet restore
-           for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe; do
+           for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe InventoryManager; do
                dotnet restore $s/$s.sln
            done
 
     - name: Build solutions
       run: |
            dotnet build --configuration Debug --no-restore
-           for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe; do
+           for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe InventoryManager; do
                dotnet build --configuration Debug --no-restore $s/$s.sln
            done
 
@@ -44,6 +44,10 @@ jobs:
            for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe; do
                coverlet $s/$s.Core.UnitTests/bin/Debug/net7/$s.Core.UnitTests.dll --target "dotnet" --targetargs "test $s/$s.Core.UnitTests/$s.Core.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output $s.coverage.xml
            done
+
+          for s in InventoryManager; do
+              coverlet $s/test/bin/Debug/net7.0/$s.UnitTests.dll --target "dotnet" --targetargs "test $s/test/$s.UnitTests.csproj --no-build --verbosity quiet" --format OpenCover --output $s.coverage.xml
+          done
 
     - name: Upload coverage to CodeCov
       run: bash <(curl -s https://codecov.io/bash)

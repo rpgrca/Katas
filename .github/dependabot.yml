@@ -47,3 +47,10 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+
+  - package-ecosystem: "nuget"
+    directory: "/InventoryManager"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+
