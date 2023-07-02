@@ -24,16 +24,3 @@ public class DrugSafetyAnalyzer
         }
     }
 }
-
-public class Drug
-{
-    public string Name { get; set; }
-    public List<string> Ingredients { get; set; }
-}
-
-public enum SafetyLevel
-{
-    Safe,
-    Dangerous,
-    Mortal
-}
