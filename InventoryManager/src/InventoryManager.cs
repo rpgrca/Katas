@@ -37,46 +37,9 @@ public class InventoryManager
 
     public void UpdateQuality(Item[] items)
     {
-        var builder = new QualityUpdater.Builder();
-
-        builder.Add("Sulfuras, Hand of Ragnaros")
-            .Next();
-
-        builder.Add("Aged Brie")
-            .CheckingQualityUpdateWith(Rule.CanIncrementQuality)
-            .UpdatingQualityWith(Rule.IncrementQuality)
-            .CanCheckExpiration(Rule.AlwaysTrue)
-            .WhenExpiredDo(i => {
-                i.Quality += 1;
-                Rule.CapTopQuality(i);
-            });
-
-        builder.Add("Backstage passes to a TAFKAL80ETC concert")
-            .CheckingQualityUpdateWith(Rule.CanIncrementQuality)
-            .UpdatingQualityWith(i => {
-                    i.Quality += i.SellIn switch {
-                        < 6 => 3,
-                        < 11 => 2,
-                        _ => 1
-                    };
-
-                    Rule.CapTopQuality(i);
-                })
-            .CanCheckExpiration(Rule.Expired)
-            .WhenExpiredDo(Rule.ResetQuality);
-
-        builder.Add(ANYTHING_ELSE)
-            .CheckingQualityUpdateWith(Rule.CanDecrementQuality)
-            .UpdatingQualityWith(Rule.DecrementQuality)
-            .CanCheckExpiration(Rule.AlwaysTrue)
-            .WhenExpiredDo(i => {
-                Rule.DecrementQuality(i);
-                Rule.CapLowerQuality(i);
-            });
-
         foreach (var item in items)
         {
-            var qualityUpdater = builder.BuildFor(item);
+            var qualityUpdater = new QualityUpdater(item, _rules);
             qualityUpdater.Update();
         }
     }
