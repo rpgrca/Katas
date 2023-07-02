@@ -58,4 +58,20 @@ public class Rule
     public static void DoNothing(Item _)
     {
     }
+
+    public static void CapTopQuality(Item item)
+    {
+        if (item.Quality > 50)
+        {
+            item.Quality = 50;
+        }
+    }
+
+    public static void CapLowerQuality(Item item)
+    {
+        if (item.Quality < 0)
+        {
+            item.Quality = 0;
+        }
+    }
 }

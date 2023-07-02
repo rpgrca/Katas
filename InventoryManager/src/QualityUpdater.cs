@@ -2,6 +2,7 @@ namespace InventoryManager.Logic;
 
 public class QualityUpdater
 {
+    private const string ANYTHING_ELSE = "";
     private readonly Item _item;
     private readonly Rule[] _rules;
 
@@ -10,21 +11,11 @@ public class QualityUpdater
         _item = item;
         _rules = new Rule[]
         {
-            new("Sulfuras, Hand of Ragnaros",
-                Rule.AlwaysFalse,
-                Rule.DoNothing,
-                Rule.AlwaysFalse,
-                Rule.DoNothing),
-            new("Aged Brie",
-                Rule.CanIncrementQuality,
-                Rule.IncrementQuality,
-                Rule.AlwaysTrue,
+            new("Sulfuras, Hand of Ragnaros", Rule.AlwaysFalse, Rule.DoNothing, Rule.AlwaysFalse, Rule.DoNothing),
+            new("Aged Brie", Rule.CanIncrementQuality, Rule.IncrementQuality, Rule.AlwaysTrue,
                 i => {
                     i.Quality += 1;
-                    if (i.Quality > 50)
-                    {
-                        i.Quality = 50;
-                    }
+                    Rule.CapTopQuality(i);
                 }),
             new("Backstage passes to a TAFKAL80ETC concert",
                 Rule.CanIncrementQuality,
@@ -35,23 +26,14 @@ public class QualityUpdater
                         _ => 1
                     };
 
-                    if (i.Quality > 50)
-                    {
-                        i.Quality = 50;
-                    }
+                    Rule.CapTopQuality(i);
                 },
                 Rule.Expired,
                 Rule.ResetQuality),
-            new("",
-                Rule.CanDecrementQuality,
-                Rule.DecrementQuality,
-                Rule.AlwaysTrue,
+            new(ANYTHING_ELSE, Rule.CanDecrementQuality, Rule.DecrementQuality, Rule.AlwaysTrue,
                 i => {
                     i.Quality -= 1;
-                    if (i.Quality < 0)
-                    {
-                        i.Quality = 0;
-                    }
+                    Rule.CapLowerQuality(i);
                 })
         };
     }
@@ -59,6 +41,6 @@ public class QualityUpdater
     public void Update()
     {
         var rule = _rules.First(r => r.CanApplyOn(_item));
-        rule?.Apply(_item);
+        rule.Apply(_item);
     }
 }
