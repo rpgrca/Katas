@@ -142,4 +142,16 @@ public class UpdateQualityMust
         Assert.Equal(expectedQuality, item.Quality);
     }
 
+    [Theory]
+    [InlineData(10)]
+    [InlineData(1)]
+    public void DecreaseQualityToZero_WhenPassExpires(int quality)
+    {
+        var item = CreateItem("Backstage passes to a TAFKAL80ETC concert", 0, quality);
+        var sut = new Logic.InventoryManager();
+
+        sut.UpdateQuality(new[] { item });
+
+        Assert.Equal(0, item.Quality);
+    }
 }
