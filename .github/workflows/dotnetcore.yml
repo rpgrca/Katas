@@ -28,14 +28,14 @@ jobs:
     - name: Restore packages
       run: |
            dotnet restore
-           for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe InventoryManager; do
+           for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe InventoryManager DrugSafetyAnalyzer; do
                dotnet restore $s/$s.sln
            done
 
     - name: Build solutions
       run: |
            dotnet build --configuration Debug --no-restore
-           for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe InventoryManager; do
+           for s in BowlingGame FizzBuzz MarsRover PasswordVerifier ScoreKeeper TicTacToe Wardrobe InventoryManager DrugSafetyAnalyzer; do
                dotnet build --configuration Debug --no-restore $s/$s.sln
            done
 
