@@ -54,3 +54,14 @@ updates:
       interval: "weekly"
       day: "monday"
 
+  - package-ecosystem: "nuget"
+    directory: "/DrugSafetyAnalyzer"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+
+  - package-ecosystem: "nuget"
+    directory: "/MovieRental"
+    schedule:
+      interval: "weekly"
+      day: "monday"
