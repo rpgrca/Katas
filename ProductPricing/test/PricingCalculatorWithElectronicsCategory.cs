@@ -31,7 +31,7 @@ public class PricingCalculatorWithElectronicsCategoryMust
         bool taxable = false, bool imported = false) =>
         new()
         {
-            Name = "Shirt",
+            Name = "Camera",
             BasePrice = price,
             Category = "Electronics",
             IsTaxable = taxable,

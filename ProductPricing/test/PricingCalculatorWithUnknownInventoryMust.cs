@@ -23,7 +23,7 @@ public class PricingCalculatorWithUnknownCategoryMust
         bool taxable = false, bool imported = false) =>
         new()
         {
-            Name = "Shirt",
+            Name = "Newspaper",
             BasePrice = price,
             Category = "Unknown",
             IsTaxable = taxable,
