@@ -7,9 +7,11 @@ public class PricingCalculatorWithElectronicsCategoryMust
     private const int CheapPrice = 100;
     private const int CheapPriceWithSmallDiscount = 80;
     private const int CheapPriceWithSmallDiscountWithTax = 88;
+    private const int CheapPriceWithSmallDiscountImported = 84;
     private const int ExpensivePrice = 10000;
     private const int ExpensivePriceWithLargeDiscount = 9950;
     private const double ExpensivePriceWithLargeDiscountWithTax = 10945;
+    private const double ExpensivePriceWithLargeDiscountImported = 10447.5;
  
     [Theory]
     [InlineData(CheapPrice, CheapPriceWithSmallDiscount)]
@@ -46,5 +48,15 @@ public class PricingCalculatorWithElectronicsCategoryMust
         Assert.Equal(expectedTotal, result);
     }
 
+    [Theory]
+    [InlineData(CheapPrice, CheapPriceWithSmallDiscountImported)]
+    [InlineData(ExpensivePrice, ExpensivePriceWithLargeDiscountImported)]
+    public void ReturnSamePrice_WhenIsImportedAndNotTaxed(decimal price, decimal expectedTotal)
+    {
+        var product = CreateProductWithElectronicsCategory(price: price, imported: true);
+        var sut = new PricingCalculator();
 
+        var result = sut.CalculatePrice(product);
+        Assert.Equal(expectedTotal, result);
+    }
 }
