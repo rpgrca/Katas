@@ -2,7 +2,7 @@ using ProductPricing.Logic;
 
 namespace ProductPricing.UnitTests;
 
-public class PricingCalculatorWithUnknownInventoryMust
+public class PricingCalculatorWithUnknownCategoryMust
 {
     private const decimal Price = 100;
     private const decimal PriceWithImportDuties = 105;
