@@ -58,6 +58,5 @@ public class PricingCalculatorWithUnknownCategoryMust
 
         var result = sut.CalculatePrice(product);
         Assert.Equal(PriceWithTaxAndImportDuties, result);
-
     }
 }

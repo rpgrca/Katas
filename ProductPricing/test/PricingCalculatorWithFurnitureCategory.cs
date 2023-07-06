@@ -6,6 +6,7 @@ public class PricingCalculatorWithFurnitureCategoryMust
 {
     public const decimal Price = 1000;
     public const decimal Total = 1100;
+    public const decimal TotalWithImportDuties = 1155;
 
     [Fact]
     public void ReturnCorrectPrice_WhenIsNotTaxableNorImported()
@@ -26,4 +27,14 @@ public class PricingCalculatorWithFurnitureCategoryMust
             IsTaxable = taxable,
             IsImported = imported
         };
+
+    [Fact]
+    public void ReturnCorrectPrice_WhenIsImported()
+    {
+        var product = CreateProductWithFurnitureCategory(imported: true);
+        var sut = new PricingCalculator();
+
+        var result = sut.CalculatePrice(product);
+        Assert.Equal(TotalWithImportDuties, result);
+    }
 }
