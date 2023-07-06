@@ -38,4 +38,14 @@ public class PricingCalculatorWithUnknownInventoryMust
         var result = sut.CalculatePrice(product);
         Assert.Equal(PriceWithImportDuties, result);
     }
+
+    [Fact]
+    public void ReturnCorrectPrice_WhenProductHasTax()
+    {
+        var product = CreateProductWithUnknownCategory(taxable: true);
+        var sut = new PricingCalculator();
+
+        var result = sut.CalculatePrice(product);
+        Assert.Equal(PriceWithTax, result);
+    }
 }
