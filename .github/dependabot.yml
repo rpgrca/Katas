@@ -65,3 +65,9 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+
+  - package-ecosystem: "nuget"
+    directory: "/ProductPricing"
+    schedule:
+      interval: "weekly"
+      day: "monday"
