@@ -29,4 +29,13 @@ public class PricingCalculatorWithUnknownInventoryMust
             IsImported = imported
         };
 
+    [Fact]
+    public void ReturnCorrectPrice_WhenProductIsImported()
+    {
+        var product = CreateProductWithUnknownCategory(imported: true);
+        var sut = new PricingCalculator();
+
+        var result = sut.CalculatePrice(product);
+        Assert.Equal(PriceWithImportDuties, result);
+    }
 }
