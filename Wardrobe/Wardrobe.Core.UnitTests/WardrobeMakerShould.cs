@@ -106,12 +106,12 @@ namespace Wardrobe.Core.UnitTests
         {
             var wardrobeMaker = new WardrobeMaker(new List<int>() { 1, 2, });
             var wardrobes = wardrobeMaker.GetCombinations(4);
-            Assert.Equal(5, wardrobes.Count);
-            Assert.Contains(new List<int>() {1, 1, 1, 1}, wardrobes);
-            Assert.Contains(new List<int>() {1, 1, 2}, wardrobes);
-            Assert.Contains(new List<int>() {1, 2, 1}, wardrobes);
-            Assert.Contains(new List<int>() {2, 1, 1}, wardrobes);
-            Assert.Contains(new List<int>() { 2, 2 }, wardrobes);
+            Assert.Collection(wardrobes,
+                p1 => { Assert.Equal(1, p1[0]); Assert.Equal(2, p1[1]); Assert.Equal(1, p1[2]); },
+                p2 => { Assert.Equal(1, p2[0]); Assert.Equal(1, p2[1]); Assert.Equal(2, p2[2]); },
+                p3 => { Assert.Equal(1, p3[0]); Assert.Equal(1, p3[1]); Assert.Equal(1, p3[2]); Assert.Equal(1, p3[3]); },
+                p4 => { Assert.Equal(2, p4[0]); Assert.Equal(2, p4[1]); },
+                p5 => { Assert.Equal(2, p5[0]); Assert.Equal(1, p5[1]); Assert.Equal(1, p5[2]); });
         }
 
         [Fact]
@@ -119,24 +119,24 @@ namespace Wardrobe.Core.UnitTests
         {
             var wardrobeMaker = new WardrobeMaker(new List<int>() {50, 75, 100, 120});
             var wardrobes = wardrobeMaker.GetCombinations(250);
-            Assert.Equal(17, wardrobes.Count);
-            Assert.Contains(new List<int>() {50, 50, 50, 50, 50}, wardrobes); // 59*5 = 295
-            Assert.Contains(new List<int>() {50, 100, 100}, wardrobes); // 59 + 2*90 = 239
-            Assert.Contains(new List<int>() {100, 50, 100}, wardrobes);
-            Assert.Contains(new List<int>() {100, 100, 50}, wardrobes);
-            Assert.Contains(new List<int>() {50, 50, 50, 100}, wardrobes); // 59*3 + 90 = 267
-            Assert.Contains(new List<int>() {50, 50, 100, 50}, wardrobes);
-            Assert.Contains(new List<int>() {50, 100, 50, 50}, wardrobes);
-            Assert.Contains(new List<int>() {100, 50, 50, 50}, wardrobes);
-            Assert.Contains(new List<int>() {75, 75, 100}, wardrobes); // 62*2 + 90 = 214
-            Assert.Contains(new List<int>() {75, 100, 75}, wardrobes);
-            Assert.Contains(new List<int>() {100, 75, 75}, wardrobes);
-            Assert.Contains(new List<int>() {75, 75, 50, 50}, wardrobes); // 59*2 + 62*2 = 242
-            Assert.Contains(new List<int>() {75, 50, 75, 50}, wardrobes);
-            Assert.Contains(new List<int>() {75, 50, 50, 75}, wardrobes);
-            Assert.Contains(new List<int>() {50, 75, 75, 50}, wardrobes);
-            Assert.Contains(new List<int>() {50, 75, 50, 75}, wardrobes);
-            Assert.Contains(new List<int>() {50, 50, 75, 75}, wardrobes);
+            Assert.Collection(wardrobes,
+                p1 => { Assert.Equal(50, p1[0]); Assert.Equal(100, p1[1]); Assert.Equal(100, p1[2]); },
+                p2 => { Assert.Equal(50, p2[0]); Assert.Equal(100, p2[1]); Assert.Equal( 50, p2[2]); Assert.Equal(p2[3], 50); },
+                p3 => { Assert.Equal(50, p3[0]); Assert.Equal(75,  p3[1]); Assert.Equal(75, p3[2]); Assert.Equal(50, p3[3]); },
+                p4 => { Assert.Equal(50, p4[0]); Assert.Equal(50,  p4[1]); Assert.Equal(100, p4[2]); Assert.Equal(50, p4[3]); }, 
+                p5 => { Assert.Equal(50, p5[0]); Assert.Equal(75,  p5[1]); Assert.Equal(50, p5[2]); Assert.Equal(75, p5[3]); },
+                p6 => { Assert.Equal(50, p6[0]); Assert.Equal(50,  p6[1]); Assert.Equal(75, p6[2]); Assert.Equal(75, p6[3]); }, 
+                p7 => { Assert.Equal(50, p7[0]); Assert.Equal(50,  p7[1]); Assert.Equal(50, p7[2]); Assert.Equal(100, p7[3]); },
+                p8 => { Assert.Equal(50, p8[0]); Assert.Equal(50,  p8[1]); Assert.Equal(50, p8[2]); Assert.Equal(50, p8[3]); Assert.Equal(50, p8[4]); }, // 59*5 = 295
+                p9 => { Assert.Equal(75, p9[0]); Assert.Equal(100, p9[1]); Assert.Equal(75, p9[2]); },
+                pa => { Assert.Equal(75, pa[0]); Assert.Equal(75,  pa[1]); Assert.Equal(100, pa[2]); }, // 62*2 + 90 = 214
+                pb => { Assert.Equal(75, pb[0]); Assert.Equal(75,  pb[1]); Assert.Equal(50, pb[2]); Assert.Equal(50, pb[3]); },
+                pc => { Assert.Equal(75, pc[0]); Assert.Equal(50,  pc[1]); Assert.Equal(75, pc[2]); Assert.Equal(50, pc[3]); },
+                pd => { Assert.Equal(75, pd[0]); Assert.Equal(50,  pd[1]); Assert.Equal(50, pd[2]); Assert.Equal(75, pd[3]); }, // 59*2 + 62*2 = 242
+                pe => { Assert.Equal(100, pe[0]); Assert.Equal(100, pe[1]); Assert.Equal(50, pe[2]); }, // 59 + 2*90 = 239
+                pf => { Assert.Equal(100, pf[0]); Assert.Equal(75, pf[1]); Assert.Equal(75, pf[2]); },
+                pg => { Assert.Equal(100, pg[0]); Assert.Equal(50, pg[1]); Assert.Equal(100, pg[2]); },
+                ph => { Assert.Equal(100, ph[0]); Assert.Equal(50, ph[1]); Assert.Equal(50, ph[2]); Assert.Equal(50, ph[3]); }); // 59*3 + 90 = 267
         }
 
         [Fact]
